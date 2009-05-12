@@ -1,0 +1,85 @@
+#twitter-submit {
+	width: 650px;
+	margin: 5px 5px 20px 5px;
+}
+
+#tweet-tools {
+	font-size: 0.75em;
+	margin: 0;
+	padding: 0 12px 0 0;
+	text-align: right;
+}
+
+p.api-rate {
+	font-size: 0.75em;
+}
+
+#my-latest-status {
+	font-size: 0.8em;
+	color: #666666;
+	float: left;
+	margin: 5px 8px 0;
+	padding: 3px 4px;
+	width: 370px;
+}
+
+.twitter_timeline ol {
+	margin: 0 5px 0 5px;
+	padding:0;
+}
+
+.twitter_timeline li {
+	width: 650px;
+	list-style:none;
+	position:relative;
+	border-bottom:1px dashed #9a9898;
+	padding: 6px 0 6px 0;
+}
+
+.twitter_main_thumb {
+	width:48px;
+	height:48px;
+	position:absolute;
+	display:block;
+	left:0;
+	top: 0;
+	margin: 0 10px 0 5px;
+	overflow:hidden;
+	padding: 1px;
+	border: 1px solid #9a9898;
+}
+
+.twitter_status {
+	width:495px;
+	display:block;
+	margin: 0;
+	padding: 0;
+	//margin-left:67px;
+	position:absolute;
+	top: 5px;
+	left: 67px;
+	min-height:50px;
+	overflow:hidden;
+}
+
+.twitter_meta {
+	display: block;
+	font-size: 0.8em;
+	font-style: italic;
+	color: #9a9898;
+}
+
+.twitter_functions {
+	display: block;
+	position: absolute;
+	top: 5px;
+	right: 10px;
+}
+
+.twitter_timeline a.user {
+	text-decoration: none;
+}
+
+.tw-hide {
+	visibility:hidden;
+}
