@@ -5,11 +5,12 @@ Plugin URI: http://www.webmaster-source.com/tweetable-twitter-plugin-wordpress/
 Description: Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc.
 Author: Matt Harzewski (redwall_hp)
 Author URI: http://www.webmaster-source.com
-Version: 1.0.1
+Version: 1.0.2
 */
 
 
 
+global $wp_version;
 if (version_compare($wp_version, '2.7', '<')) {
 	exit("Tweetable requires WordPress 2.7 or greater.");
 }
