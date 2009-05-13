@@ -7,7 +7,7 @@ add_action('admin_init', 'tweetable_styles_and_scripts');
 add_action('admin_menu', 'tweetable_add_admin_menus');
 add_filter('favorite_actions', 'tweetable_add_menu_favorite');
 add_action('wp_dashboard_setup', 'tweetable_add_dashboard_widget');
-register_activation_hook(__FILE__,'tweetable_plugin_activated');
+
 
 
 
@@ -33,18 +33,6 @@ function tweetable_add_admin_menus() {
 
 
 
-/*** When the plugin is first activated... ***/
-function tweetable_plugin_activated() {
-	global $wp_version;
-	if (version_compare($wp_version, '2.7', '<')) {
-		exit("Tweetable requires WordPress 2.7 or greater.");
-	}
-	if (version_compare(PHP_VERSION, '5.0.0', '<')) {
-		exit("Tweetable requires PHP 5 or greater.");
-	}
-}
-
-
 
 /*** Has a Twitter account been bound to Tweetable? ***/
 function tweetable_install_check() {
@@ -62,6 +50,7 @@ function tweetable_install_check() {
 
 
 
+
 /*** Add scripts and stylesheets to the Admin ***/
 function tweetable_styles_and_scripts() {
 
@@ -73,6 +62,7 @@ function tweetable_styles_and_scripts() {
 	wp_enqueue_script('tweetable-twitter', WP_PLUGIN_URL.'/tweetable/admin_scripts.js');
 
 }
+
 
 
 
@@ -90,6 +80,7 @@ function tweetable_admin_page_header() {
 
 
 
+
 /*** Footer for Admin Pages ***/
 function tweetable_admin_page_footer() {
 
@@ -101,6 +92,7 @@ function tweetable_admin_page_footer() {
 	echo '</div>';
 	
 }
+
 
 
 

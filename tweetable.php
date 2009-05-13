@@ -10,6 +10,16 @@ Version: 1.0.0
 
 
 
+if (version_compare($wp_version, '2.7', '<')) {
+	exit("Tweetable requires WordPress 2.7 or greater.");
+}
+if (version_compare(PHP_VERSION, '5.0.0', '<')) {
+	exit("Tweetable requires PHP 5 or greater.");
+}
+	
+
+
+
 /*** Includes ***/
 include 'mh_twitter_class.php';
 
