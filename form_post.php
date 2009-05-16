@@ -13,6 +13,9 @@ if(!empty($_POST)) {
 	switch($_POST['do']) {
 	
 		case 'update-status':
+			if ($_POST['token'] != md5($user_key)) {
+				exit("I don't think so, hacker...\n");
+			}
 			$status = stripslashes($_POST['tweet']);
 			$in_reply_to_status = $_POST['in_reply_to_status'];
 			$latest = $twitter->update_status($status, $user_key, $user_key_secret, $in_reply_to_status);

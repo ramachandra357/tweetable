@@ -388,6 +388,9 @@ public function shorten_url($the_url, $shortener='is.gd', $api_key='', $user='')
 	} elseif ($shortener=="tr.im") {
 		$url = "http://api.tr.im/api/trim_simple?url={$the_url}";
 		$response = $this->send_request($url, 'GET');
+	} elseif ($shortener=="tinyurl") {
+		$url = "http://tinyurl.com/api-create.php?url={$the_url}";
+		$response = $this->send_request($url, 'GET');
 	} else {
 		$url = "http://is.gd/api.php?longurl={$the_url}";
 		$response = $this->send_request($url, 'GET');

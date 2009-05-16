@@ -112,6 +112,7 @@ function tweetable_write_twittermenu() {
 
 	tweetable_admin_page_header();	
 	$user_name = get_option('tweetable_twitter_user');
+	$user_key = get_option('tweetable_access_token');
 	$rate_limit = tweetable_api_rate_status();
 	echo '<h2>Twitter (@'.$user_name.')</h2>';
 	?>
@@ -126,6 +127,7 @@ function tweetable_write_twittermenu() {
 	<input type="hidden" name="in_reply_to_user" id="in_reply_to_user" value="" />
 	<input type="hidden" name="in_reply_to_status" id="in_reply_to_status" value="" />
 	<input type="hidden" name="do" id="do_action" value="update-status" />
+	<input type="hidden" name="token" id="js_token" value="<?php echo md5($user_key); ?>" />
 	<input type="hidden" name="post_to" id="post_to" value="<?php echo tweetable_get_plugin_dir('url'); ?>/form_post.php" />
 	<div id="my-latest-status">
 	<?php
@@ -155,17 +157,20 @@ function tweetable_write_twittermenu() {
 /*** Dashboard Widget ***/
 function tweetable_dashboard_widget() {
 
+	$user_key = get_option('tweetable_access_token');
+
 	?>
-	<div id="twitter-submit">
+	<div id="twitter-submit-widget">
 	<form action="" name="post-twitter">
-	<p id="tweet-tools" style="width:430px">
+	<p id="tweet-tools" style="width:100%">
 	<span id="twitter-tools"><a href="#" id="shorten-url" title="Shorten Link"><img src="<?php echo tweetable_get_plugin_dir('url'); ?>/images/page_link.png" alt="Shorten Link" /></a></span> &nbsp;
 	<span id="chars-left"><strong>140</strong> characters left</span>
 	</p>
-	<textarea name="tweet" id="tweet" rows="2" cols="50"></textarea>
+	<textarea name="tweet" id="tweet" rows="2" cols="50" style="width:100%"></textarea>
 	<input type="hidden" name="do" id="do_action" value="update-status" />
+	<input type="hidden" name="token" id="js_token" value="<?php echo md5($user_key); ?>" />
 	<input type="hidden" name="post_to" id="post_to" value="<?php echo tweetable_get_plugin_dir('url'); ?>/form_post.php" />
-	<p class="submit" style="width:450px; text-align:right;"><input type="submit" class="button-primary" id="update-status" value="Update Status" name="submit" /></p>
+	<p class="submit" style="width:100%; text-align:right;"><span id="loading-send-tweet" style="display:none;"><img src="<?php echo tweetable_get_plugin_dir('url'); ?>/images/loading.gif" alt="Loading..." style="vertical-align:middle" /></span> <input type="submit" class="button-primary" id="update-status" value="Update Status" name="submit" /></p>
 	</form>
 	</div>
 	<?php
@@ -208,6 +213,7 @@ function tweetable_write_trackmenu() {
 	<input type="hidden" name="in_reply_to_user" id="in_reply_to_user" value="" />
 	<input type="hidden" name="in_reply_to_status" id="in_reply_to_status" value="" />
 	<input type="hidden" name="do" id="do_action" value="update-status" />
+	<input type="hidden" name="token" id="js_token" value="<?php echo md5($user_key); ?>" />
 	<input type="hidden" name="post_to" id="post_to" value="<?php echo tweetable_get_plugin_dir('url'); ?>/form_post.php" />
 	<div id="my-latest-status">
 	<?php
@@ -331,6 +337,7 @@ function tweetable_write_settingsmenu() {
 	<select name="url_shortener" id="url_shortener">
 	<option value="is.gd" <?php if ($setting_url_shortener=='is.gd') { echo 'selected="selected"'; } ?>>Is.gd</option>
 	<option value="tr.im" <?php if ($setting_url_shortener=='tr.im') { echo 'selected="selected"'; } ?>>Tr.im</option>
+	<option value="tinyurl" <?php if ($setting_url_shortener=='tinyurl') { echo 'selected="selected"'; } ?>>TinyURL.com</option>
 	</select>
 	<br />Specify which URL shortener should be used by Tweetable.
 	</td></tr>
@@ -349,7 +356,7 @@ function tweetable_write_settingsmenu() {
 	<tr valign="top">
 	<th scope="row">Auto-Tweet Posts</th>
 	<td><label for="auto_tweet_posts">
-	<input type="checkbox" name="auto_tweet_posts" <?php echo $setting_auto_tweet; ?> /> Automatically tweeted when they are published</label>
+	<input type="checkbox" name="auto_tweet_posts" <?php echo $setting_auto_tweet; ?> /> Automatically tweet posts when they are published</label>
 	</td></tr>
 	
 	<tr valign="top">

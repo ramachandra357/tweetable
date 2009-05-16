@@ -49,13 +49,18 @@ jQuery(document).ready(function() {
 jQuery(document).ready(function() {
 
 	jQuery("#update-status").click(function() {
+		if (jQuery('#tweet').val().length > 140) {
+			alert("Your message is too long. You must shorten it down to 140 characters.");
+			return false;
+		}
 		jQuery('#update-status').val('Sending...');
 		jQuery('#loading-send-tweet').show();
 		tweet = jQuery('#tweet').val();
 		in_reply_to_status = jQuery('#in_reply_to_status').val();
 		do_action = jQuery('#do_action').val();
+		token = jQuery('#js_token').val();
 		post_to = jQuery('#post_to').val();
-		datastring = 'tweet=' + tweet + '&in_reply_to_status=' + in_reply_to_status + '&do=' + do_action;
+		datastring = 'tweet=' + tweet + '&in_reply_to_status=' + in_reply_to_status + '&do=' + do_action + '&token=' + token;
 		jQuery.ajax({
 			type: "POST",
 			url: post_to,

@@ -59,7 +59,7 @@ if ($stage == '1') {
 	<li>Put a brief description of your blog in the <strong>Description</strong> box. Just a few words to identify the application.</li>
 	<li>Your blog's URL should go in the <strong>Application Website</strong> field. (E.g. <em>http://www.webmaster-source.com.</em>)</li>
 	<li>Leave the <strong>Application Type</strong> as <strong>Browser.</strong></li>
-	<li>In the <strong>Callback URL</strong> field, paste <strong>http://<?php echo htmlentities($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']); ?>&amp;oauth=1.</strong></li>
+	<li>In the <strong>Callback URL</strong> field, paste <strong><code>http://<?php echo htmlentities($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']); ?>&amp;oauth=1</code></strong></li>
 	<li>Set <strong>Default Access type</strong> as <strong>Read &amp; Write.</strong></li>
 	<li>Press the <strong>Save</strong> button, then come back here and continue the setup wizard.</li>
 	</ol>
