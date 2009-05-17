@@ -317,7 +317,9 @@ private function send_request($url, $method='GET', $data='', $auth_user='', $aut
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		}
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		if (ini_get('open_basedir') == '' && ini_get('safe_mode') == 'Off'){
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		}
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		if ($auth_user != '' && $auth_pass != '') {

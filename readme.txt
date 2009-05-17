@@ -79,3 +79,4 @@ There are a few template tags available in Tweetable.
 * Version 1.0
 * Version 1.0.1 - Fixed issue with items on the Track screen not deleting, PHP4 detection problems.
 * Version 1.0.2 - Fixed bug triggering fatal error on all installations.
+* Version 1.0.3 - Fluid-width dashboard widget (with loading throbber), 140-char limit check when posting updates, AJAX calls include token for security.

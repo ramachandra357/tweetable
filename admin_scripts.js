@@ -97,6 +97,7 @@ jQuery(document).ready(function() {
 				success: function(data) {
 					jQuery('#tweet').val(jQuery('#tweet').val()+' '+data);
 					clearInterval(loading);
+					jQuery('#shorten-url').removeClass('tw-hide');
 				}
 			});
 		}
