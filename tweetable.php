@@ -275,9 +275,11 @@ function tweetable_publish_tweet($post_id) {
 /*** Add scripts and stylesheets ***/
 function tweetable_frontend_styles_and_scripts() {
 
-	if (!is_admin()) {
-		wp_register_style('tweetable-admin', WP_PLUGIN_URL.'/tweetable/main_css.css');
-		wp_enqueue_style('tweetable-admin');
+	$setting_remove_stylesheet = get_option('tweetable_remove_stylesheet');
+
+	if (!is_admin() && !$setting_remove_stylesheet) {
+		wp_register_style('tweetable-frontend', WP_PLUGIN_URL.'/tweetable/main_css.css');
+		wp_enqueue_style('tweetable-frontend');
 	}
 
 }
