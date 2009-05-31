@@ -114,6 +114,9 @@ function tweetable_write_twittermenu() {
 	$user_name = get_option('tweetable_twitter_user');
 	$user_key = get_option('tweetable_access_token');
 	$rate_limit = tweetable_api_rate_status();
+	if ($_GET['ntweet']) {
+		$tweet_val = $_GET['ntweet'];
+	}
 	echo '<h2>Twitter (@'.$user_name.')</h2>';
 	?>
 	
@@ -123,7 +126,7 @@ function tweetable_write_twittermenu() {
 	<span id="twitter-tools"><a href="#" id="shorten-url" title="Shorten Link"><img src="<?php echo tweetable_get_plugin_dir('url'); ?>/images/page_link.png" alt="Shorten Link" /></a></span> &nbsp;
 	<span id="chars-left"><strong>140</strong> characters left</span>
 	</p>
-	<textarea name="tweet" id="tweet" rows="2" cols="75"></textarea>
+	<textarea name="tweet" id="tweet" rows="2" cols="75"><?php echo $tweet_val; ?></textarea>
 	<input type="hidden" name="in_reply_to_user" id="in_reply_to_user" value="" />
 	<input type="hidden" name="in_reply_to_status" id="in_reply_to_status" value="" />
 	<input type="hidden" name="do" id="do_action" value="update-status" />
@@ -143,6 +146,10 @@ function tweetable_write_twittermenu() {
 	
 	<div class="twitter_timeline">
 	<?php tweetable_menu_twitter_timeline($rate_limit); ?>
+	</div>
+	
+	<div style="margin-top:35px; margin-bottom:35px;">
+	<strong>Bookmarklet:</strong> <a href="javascript:(function(){loc='http://<?php echo $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]; ?>&ntweet='+document.title+'%20'+window.location;window.open(loc,'tweetable','height=525,width=865,title=no,location=no,menubars=no,navigation=no,statusbar=no,toolbar=no,scrollbars=yes');})();" style="background-color:#21759B; color:#FFFFFF; padding:3px 6px; text-decoration:none;">Tweet This!</a>
 	</div>
 	
 	<?php
@@ -238,35 +245,39 @@ function tweetable_write_trackmenu() {
 
 	$searches = get_option('tweetable_saved_searches');
 	
-	foreach ($searches as $search) {
-		echo '<div class="search-div" id="search-'.array_search($search, $searches).'">';
-		echo '<h3>'.$search.' <a href="#" class="delete-search" title="Remove"><img src="'.tweetable_get_plugin_dir('url').'/images/delete.png" alt="Delete" style="vertical-align:middle" /></a></h3>';
-		echo '<div class="twitter_timeline">';
-		echo '<ol id="tweetable-timeline">';
-		$results = $twitter->search($search, 'en', '10');
-		foreach ($results->entry as $tweet) {
-			$status_id = explode(':', $tweet->id);
-			$status_id = $status_id[2];
-			$status_user = explode(' (', $tweet->author->name);
-			$status_user = $status_user[0];
-			echo '<li class="status" id="'.$status_id.'">';
-			echo '<span class="twitter_thumb"><img src="'.$tweet->link[1]['href'].'" width="48" height="48" alt="" /></span>';
-			echo '<span class="twitter_status">';
-			echo '<strong><a class="user" href="'.$tweet->link[0]['href'].'">'.$status_user.'</a></strong> ';
-			echo '<span class="status-text">'.make_clickable($tweet->content).'</span>';
-	    	$date = date('F j, Y g:i', strtotime($tweet->published));
-			echo '<span class="twitter_meta">'.$date.'</span>';
-			echo '</span>';
-	    	echo '<span class="twitter_functions">';
-	    	echo '<a class="reply" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/reply.png" alt="Reply" title="Reply" /></a>&nbsp;';
-	    	echo '<a class="retweet" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/retweet.png" alt="Retweet" title="Retweet" /></a>';
-	    	echo '</span>';
-			echo '<br style="clear:both" />';
-			echo '</li>';
+	if ($searches) {
+		foreach ($searches as $search) {
+			echo '<div class="search-div" id="search-'.array_search($search, $searches).'">';
+			echo '<h3>'.$search.' <a href="#" class="delete-search" title="Remove"><img src="'.tweetable_get_plugin_dir('url').'/images/delete.png" alt="Delete" style="vertical-align:middle" /></a></h3>';
+			echo '<div class="twitter_timeline">';
+			echo '<ol id="tweetable-timeline">';
+			$results = $twitter->search($search, 'en', '10');
+			foreach ($results->entry as $tweet) {
+				$status_id = explode(':', $tweet->id);
+				$status_id = $status_id[2];
+				$status_user = explode(' (', $tweet->author->name);
+				$status_user = $status_user[0];
+				echo '<li class="status" id="'.$status_id.'">';
+				echo '<span class="twitter_thumb"><img src="'.$tweet->link[1]['href'].'" width="48" height="48" alt="" /></span>';
+				echo '<span class="twitter_status">';
+				echo '<strong><a class="user" href="'.$tweet->link[0]['href'].'">'.$status_user.'</a></strong> ';
+				echo '<span class="status-text">'.make_clickable($tweet->content).'</span>';
+		    	$date = date('F j, Y g:i', strtotime($tweet->published));
+				echo '<span class="twitter_meta">'.$date.'</span>';
+				echo '</span>';
+		    	echo '<span class="twitter_functions">';
+		    	echo '<a class="reply" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/reply.png" alt="Reply" title="Reply" /></a>&nbsp;';
+		    	echo '<a class="retweet" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/retweet.png" alt="Retweet" title="Retweet" /></a>';
+		    	echo '</span>';
+				echo '<br style="clear:both" />';
+				echo '</li>';
+			}
+			echo '</ol>';
+			echo '</div>';
+			echo '</div>';
 		}
-		echo '</ol>';
-		echo '</div>';
-		echo '</div>';
+	} else {
+		echo 'No searches are currently running. Maybe you should add a few?';
 	}
 
 	tweetable_admin_page_footer();
