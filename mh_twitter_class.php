@@ -3,7 +3,7 @@
 /*
 File Name: PHP Twitter API Class
 Author: Matt Harzewski (redwall_hp)Author URL: http://www.webmaster-source.com
-License: GPL
+License: LGPL
 */
 
 require_once('OAuth/twitterOAuth.php');
