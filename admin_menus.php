@@ -352,6 +352,7 @@ function tweetable_write_settingsmenu() {
 	<select name="url_shortener" id="url_shortener">
 	<option value="is.gd" <?php if ($setting_url_shortener=='is.gd') { echo 'selected="selected"'; } ?>>Is.gd</option>
 	<option value="tr.im" <?php if ($setting_url_shortener=='tr.im') { echo 'selected="selected"'; } ?>>Tr.im</option>
+	<option value="3.ly" <?php if ($setting_url_shortener=='3.ly') { echo 'selected="selected"'; } ?>>3.ly</option>
 	<option value="tinyurl" <?php if ($setting_url_shortener=='tinyurl') { echo 'selected="selected"'; } ?>>TinyURL.com</option>
 	</select>
 	<br />Specify which URL shortener should be used by Tweetable.

@@ -10,6 +10,7 @@ Version: 1.0.4
 
 
 
+/*** Version Checking. ***/
 global $wp_version;
 if (version_compare($wp_version, '2.7', '<')) {
 	exit("Tweetable requires WordPress 2.7 or greater.");
@@ -45,6 +46,8 @@ if (is_admin()) {
 
 
 /*** Template Tags ***/
+
+//Display the latest tweets by the Tweetable user
 function tweetable_latest_tweets($num=3) {
 
 	$twitter_user = get_option('tweetable_twitter_user');
@@ -66,6 +69,7 @@ function tweetable_latest_tweets($num=3) {
 }
 
 
+//Get the follower count of the Tweetable user. Pass FALSE to return instead of echo.
 function tweetable_follower_count($output=TRUE) {
 
 	$twitter_user = get_option('tweetable_twitter_user');
@@ -81,6 +85,7 @@ function tweetable_follower_count($output=TRUE) {
 }
 
 
+//Display a Tweetmeme button. Pass string 'compact' for smaller size.
 function tweetable_tweetmeme_button($type='full') {
 
 	$twitter_user = get_option('tweetable_twitter_user');
@@ -288,6 +293,8 @@ function tweetable_frontend_styles_and_scripts() {
 
 
 /*** Helper Functions ***/
+
+//Return plugin path or URL
 function tweetable_get_plugin_dir($type='url') {
 
 	if ( !defined('WP_CONTENT_URL') )
@@ -301,6 +308,7 @@ function tweetable_get_plugin_dir($type='url') {
 
 
 
+//Check Twitter API Limit
 function tweetable_api_rate_status() {
 
 	$user_key = get_option('tweetable_access_token');
@@ -315,6 +323,7 @@ function tweetable_api_rate_status() {
 
 
 
+//Returns the latest tweet by the Tweetable user
 function tweetable_fetch_latest_tweet($rate_limit='check') {
 
 	$user_key = get_option('tweetable_access_token');
@@ -356,6 +365,7 @@ function tweetable_fetch_latest_tweet($rate_limit='check') {
 
 
 
+//Returns the latest tweets by the user
 function tweetable_get_recent_tweets($rate_limit='check') {
 
 	$twitter_user = get_option('tweetable_twitter_user');
