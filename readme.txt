@@ -46,7 +46,7 @@ Generally, all you should have to do is click the Update button on the Plugins p
 == Frequently Asked Questions ==
 
 = What the @!%$ is OAuth? =
-OAuth (http://oauth.net/) is a standard used by sites like Twitter to allow third-party scripts to request access to your account. It's much more secure than simply handing an application your Twitter username and password. Thanks to OAuth, nobody can steal your Twitter password if they managed to gain access to your database.
+OAuth (http://oauth.net/) is a standard used by sites like Twitter to allow third-party scripts to request access to your account. It's much more secure than simply handing an application your Twitter username and password. Thanks to OAuth, nobody can steal your Twitter password if they managed to gain access to your WordPress database.
 
 = Who made the icons used in Tweetable? =
 The icons used throughout Tweetable are part of the Silk Icons set by FamFamFam. http://www.famfamfam.com/lab/icons/silk/
@@ -59,7 +59,7 @@ If you have a bug report, a feature request, or some other issue, please use the
 == Template Tags ==
 There are a few template tags available in Tweetable.
 
-* `<?php tweetable_latest_tweets(); ?>` - Outputs your lastest tweets. You can optionally pass a number to it to controll how many it prints. E.g. `<?php tweetable_latest_tweets(5); ?>`
+* `<?php tweetable_latest_tweets(); ?>` - Outputs your lastest tweets. You can optionally pass a number to it to controll how many it prints. E.g. `<?php tweetable_latest_tweets(5); ?>`.
 
 * `<?php tweetable_follower_count(); ?>` - Prints the number of people following you on Twitter in plain text. You can also call it in the form of `<?php $var = tweetable_follower_count(FALSE); ?>` if you need to have the number returned instead of output to the screen.
 
@@ -76,8 +76,18 @@ There are a few template tags available in Tweetable.
 
 
 == Version history ==
-* Version 1.0
-* Version 1.0.1 - Fixed issue with items on the Track screen not deleting, PHP4 detection problems.
-* Version 1.0.2 - Fixed bug triggering fatal error on all installations.
-* Version 1.0.3 - Fluid-width dashboard widget (with loading throbber), 140-char limit check when posting updates, AJAX calls include token for security.
-* Version 1.0.4 - Fixed error when Safe Mode is on, stopped Shorten URL icon from disappearing when it finished blinking.
+
+= Version 1.0 =
+Initial Release
+
+= Version 1.0.1 =
+Fixed issue with items on the Track screen not deleting, PHP4 detection problems.
+
+= Version 1.0.2 =
+Fixed bug triggering fatal error on all installations.
+
+= Version 1.0.3 =
+Fluid-width dashboard widget (with loading throbber), 140-char limit check when posting updates, AJAX calls include token for security.
+
+= Version 1.0.4 =
+Fixed error when Safe Mode is on, stopped Shorten URL icon from disappearing when it finished blinking.
