@@ -6,7 +6,7 @@ Donate link: http://www.webmaster-source.com/donate/
 Tags: twitter, tweet, tweetable, wordpress, plugin
 Requires at least: 2.7
 Tested up to: 2.7.1
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 
 Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc. Uses OAuth for user authentication, so your Twitter password is not stored in plain text.
 
@@ -46,7 +46,10 @@ Generally, all you should have to do is click the Update button on the Plugins p
 == Frequently Asked Questions ==
 
 = What the @!%$ is OAuth? =
-OAuth (http://oauth.net/) is a standard used by sites like Twitter to allow third-party scripts to request access to your account. It's much more secure than simply handing an application your Twitter username and password. Thanks to OAuth, nobody can steal your Twitter password if they managed to gain access to your database.
+OAuth (http://oauth.net/) is a standard used by sites like Twitter to allow third-party scripts to request access to your account. It's much more secure than simply handing an application your Twitter username and password. Thanks to OAuth, nobody can steal your Twitter password if they managed to gain access to your WordPress database.
+
+= What is the bookmarklet on the "Tweet" page? =
+If you drag it into your browser's bookmarks toolbar, you can tweet a link to a web page just by clicking it. (You will have to log into your blog admin, of course.)
 
 = Who made the icons used in Tweetable? =
 The icons used throughout Tweetable are part of the Silk Icons set by FamFamFam. http://www.famfamfam.com/lab/icons/silk/
@@ -59,7 +62,7 @@ If you have a bug report, a feature request, or some other issue, please use the
 == Template Tags ==
 There are a few template tags available in Tweetable.
 
-* `<?php tweetable_latest_tweets(); ?>` - Outputs your lastest tweets. You can optionally pass a number to it to controll how many it prints. E.g. `<?php tweetable_latest_tweets(5); ?>`
+* `<?php tweetable_latest_tweets(); ?>` - Outputs your lastest tweets. You can optionally pass a number to it to controll how many it prints. E.g. `<?php tweetable_latest_tweets(5); ?>`.
 
 * `<?php tweetable_follower_count(); ?>` - Prints the number of people following you on Twitter in plain text. You can also call it in the form of `<?php $var = tweetable_follower_count(FALSE); ?>` if you need to have the number returned instead of output to the screen.
 
@@ -76,8 +79,25 @@ There are a few template tags available in Tweetable.
 
 
 == Version history ==
-* Version 1.0
-* Version 1.0.1 - Fixed issue with items on the Track screen not deleting, PHP4 detection problems.
-* Version 1.0.2 - Fixed bug triggering fatal error on all installations.
-* Version 1.0.3 - Fluid-width dashboard widget (with loading throbber), 140-char limit check when posting updates, AJAX calls include token for security.
-* Version 1.0.4 - Fixed error when Safe Mode is on, stopped Shorten URL icon from disappearing when it finished blinking.
+
+= Version 1.0 =
+Initial Release
+
+= Version 1.0.1 =
+Fixed issue with items on the Track screen not deleting, PHP4 detection problems.
+
+= Version 1.0.2 =
+Fixed bug triggering fatal error on all installations.
+
+= Version 1.0.3 =
+Fluid-width dashboard widget (with loading throbber), 140-char limit check when posting updates, AJAX calls include token for security.
+
+= Version 1.0.4 =
+Fixed error when Safe Mode is on, stopped Shorten URL icon from disappearing when it finished blinking.
+
+= Version 1.0.5 =
+* Auto-tweets no longer show-up in the sidebar widget, as long as you specify a tweet prefix in the settings.
+* Option to exclude Tweetable stylesheet. If you don't display your latest tweets publicly on your blog, why should a stylesheet be included?
+* Added Tweetable "Tweet This" bookmarklet. You can find it on the "Tweet" page.
+* Added "3.ly" to the supported URL shorteners.
+* Added a link to reset the setup wizard if something goes wrong and it doesn't complete.

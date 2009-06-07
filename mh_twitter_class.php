@@ -3,7 +3,7 @@
 /*
 File Name: PHP Twitter API Class
 Author: Matt Harzewski (redwall_hp)Author URL: http://www.webmaster-source.com
-License: GPL
+License: LGPL
 */
 
 require_once('OAuth/twitterOAuth.php');
@@ -389,6 +389,9 @@ public function shorten_url($the_url, $shortener='is.gd', $api_key='', $user='')
 		}
 	} elseif ($shortener=="tr.im") {
 		$url = "http://api.tr.im/api/trim_simple?url={$the_url}";
+		$response = $this->send_request($url, 'GET');
+	} elseif ($shortener=="3.ly") {
+		$url = "http://3.ly/?api=em5893833&u={$the_url}";
 		$response = $this->send_request($url, 'GET');
 	} elseif ($shortener=="tinyurl") {
 		$url = "http://tinyurl.com/api-create.php?url={$the_url}";

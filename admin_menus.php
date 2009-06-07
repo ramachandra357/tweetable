@@ -114,6 +114,9 @@ function tweetable_write_twittermenu() {
 	$user_name = get_option('tweetable_twitter_user');
 	$user_key = get_option('tweetable_access_token');
 	$rate_limit = tweetable_api_rate_status();
+	if ($_GET['ntweet']) {
+		$tweet_val = $_GET['ntweet'];
+	}
 	echo '<h2>Twitter (@'.$user_name.')</h2>';
 	?>
 	
@@ -123,7 +126,7 @@ function tweetable_write_twittermenu() {
 	<span id="twitter-tools"><a href="#" id="shorten-url" title="Shorten Link"><img src="<?php echo tweetable_get_plugin_dir('url'); ?>/images/page_link.png" alt="Shorten Link" /></a></span> &nbsp;
 	<span id="chars-left"><strong>140</strong> characters left</span>
 	</p>
-	<textarea name="tweet" id="tweet" rows="2" cols="75"></textarea>
+	<textarea name="tweet" id="tweet" rows="2" cols="75"><?php echo $tweet_val; ?></textarea>
 	<input type="hidden" name="in_reply_to_user" id="in_reply_to_user" value="" />
 	<input type="hidden" name="in_reply_to_status" id="in_reply_to_status" value="" />
 	<input type="hidden" name="do" id="do_action" value="update-status" />
@@ -143,6 +146,10 @@ function tweetable_write_twittermenu() {
 	
 	<div class="twitter_timeline">
 	<?php tweetable_menu_twitter_timeline($rate_limit); ?>
+	</div>
+	
+	<div style="margin-top:35px; margin-bottom:35px;">
+	<strong>Bookmarklet:</strong> <a href="javascript:(function(){loc='http://<?php echo $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]; ?>&ntweet='+document.title+'%20'+window.location;window.open(loc,'tweetable','height=525,width=865,title=no,location=no,menubars=no,navigation=no,statusbar=no,toolbar=no,scrollbars=yes');})();" style="background-color:#21759B; color:#FFFFFF; padding:3px 6px; text-decoration:none;">Tweet This!</a>
 	</div>
 	
 	<?php
@@ -238,35 +245,39 @@ function tweetable_write_trackmenu() {
 
 	$searches = get_option('tweetable_saved_searches');
 	
-	foreach ($searches as $search) {
-		echo '<div class="search-div" id="search-'.array_search($search, $searches).'">';
-		echo '<h3>'.$search.' <a href="#" class="delete-search" title="Remove"><img src="'.tweetable_get_plugin_dir('url').'/images/delete.png" alt="Delete" style="vertical-align:middle" /></a></h3>';
-		echo '<div class="twitter_timeline">';
-		echo '<ol id="tweetable-timeline">';
-		$results = $twitter->search($search, 'en', '10');
-		foreach ($results->entry as $tweet) {
-			$status_id = explode(':', $tweet->id);
-			$status_id = $status_id[2];
-			$status_user = explode(' (', $tweet->author->name);
-			$status_user = $status_user[0];
-			echo '<li class="status" id="'.$status_id.'">';
-			echo '<span class="twitter_thumb"><img src="'.$tweet->link[1]['href'].'" width="48" height="48" alt="" /></span>';
-			echo '<span class="twitter_status">';
-			echo '<strong><a class="user" href="'.$tweet->link[0]['href'].'">'.$status_user.'</a></strong> ';
-			echo '<span class="status-text">'.make_clickable($tweet->content).'</span>';
-	    	$date = date('F j, Y g:i', strtotime($tweet->published));
-			echo '<span class="twitter_meta">'.$date.'</span>';
-			echo '</span>';
-	    	echo '<span class="twitter_functions">';
-	    	echo '<a class="reply" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/reply.png" alt="Reply" title="Reply" /></a>&nbsp;';
-	    	echo '<a class="retweet" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/retweet.png" alt="Retweet" title="Retweet" /></a>';
-	    	echo '</span>';
-			echo '<br style="clear:both" />';
-			echo '</li>';
+	if ($searches) {
+		foreach ($searches as $search) {
+			echo '<div class="search-div" id="search-'.array_search($search, $searches).'">';
+			echo '<h3>'.$search.' <a href="#" class="delete-search" title="Remove"><img src="'.tweetable_get_plugin_dir('url').'/images/delete.png" alt="Delete" style="vertical-align:middle" /></a></h3>';
+			echo '<div class="twitter_timeline">';
+			echo '<ol id="tweetable-timeline">';
+			$results = $twitter->search($search, 'en', '10');
+			foreach ($results->entry as $tweet) {
+				$status_id = explode(':', $tweet->id);
+				$status_id = $status_id[2];
+				$status_user = explode(' (', $tweet->author->name);
+				$status_user = $status_user[0];
+				echo '<li class="status" id="'.$status_id.'">';
+				echo '<span class="twitter_thumb"><img src="'.$tweet->link[1]['href'].'" width="48" height="48" alt="" /></span>';
+				echo '<span class="twitter_status">';
+				echo '<strong><a class="user" href="'.$tweet->link[0]['href'].'">'.$status_user.'</a></strong> ';
+				echo '<span class="status-text">'.make_clickable($tweet->content).'</span>';
+		    	$date = date('F j, Y g:i', strtotime($tweet->published));
+				echo '<span class="twitter_meta">'.$date.'</span>';
+				echo '</span>';
+		    	echo '<span class="twitter_functions">';
+		    	echo '<a class="reply" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/reply.png" alt="Reply" title="Reply" /></a>&nbsp;';
+		    	echo '<a class="retweet" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/retweet.png" alt="Retweet" title="Retweet" /></a>';
+		    	echo '</span>';
+				echo '<br style="clear:both" />';
+				echo '</li>';
+			}
+			echo '</ol>';
+			echo '</div>';
+			echo '</div>';
 		}
-		echo '</ol>';
-		echo '</div>';
-		echo '</div>';
+	} else {
+		echo 'No searches are currently running. Maybe you should add a few?';
 	}
 
 	tweetable_admin_page_footer();
@@ -291,12 +302,14 @@ function tweetable_write_settingsmenu() {
 		$post_auto_tweet_prefix = $wpdb->escape($_POST['auto_tweet_prefix']);
 		($_POST['auto_tweet_posts']) ? $post_auto_tweet_posts = '1' : $post_auto_tweet_posts = '0';
 		($_POST['google_campaign_tags']) ? $post_google_campaign_tags = '1' : $post_google_campaign_tags = '0';
+		($_POST['remove_stylesheet']) ? $post_remove_stylesheet = '1' : $post_remove_stylesheet = '0';
 		update_option("tweetable_main_menu_permission", $post_twitter_user_level);
 		update_option("tweetable_tweetmeme_button_mode", $post_tweetmeme);
 		update_option("tweetable_url_shortener", $post_url_shortener);
 		update_option("tweetable_auto_tweet_posts", $post_auto_tweet_posts);
 		update_option("tweetable_auto_tweet_prefix", $post_auto_tweet_prefix);
 		update_option("tweetable_google_campaign_tags", $post_google_campaign_tags);
+		update_option("tweetable_remove_stylesheet", $post_remove_stylesheet);
 	}
 	//Retrieve current settings
 	$setting_twitter_user_level = get_option("tweetable_main_menu_permission");
@@ -307,6 +320,8 @@ function tweetable_write_settingsmenu() {
 	$setting_auto_tweet_prefix = get_option('tweetable_auto_tweet_prefix');
 	$setting_google_campaign_tags = get_option('tweetable_google_campaign_tags');
 	($setting_google_campaign_tags == '1') ? $setting_google_campaign_tags = 'checked="checked"' : $setting_google_campaign_tags = '';
+	$setting_remove_stylesheet = get_option('tweetable_remove_stylesheet');
+	($setting_remove_stylesheet == '1') ? $setting_remove_stylesheet = 'checked="checked"' : $setting_remove_stylesheet = '';
 	
 	?>
 	<div class="alignright">
@@ -337,6 +352,7 @@ function tweetable_write_settingsmenu() {
 	<select name="url_shortener" id="url_shortener">
 	<option value="is.gd" <?php if ($setting_url_shortener=='is.gd') { echo 'selected="selected"'; } ?>>Is.gd</option>
 	<option value="tr.im" <?php if ($setting_url_shortener=='tr.im') { echo 'selected="selected"'; } ?>>Tr.im</option>
+	<option value="3.ly" <?php if ($setting_url_shortener=='3.ly') { echo 'selected="selected"'; } ?>>3.ly</option>
 	<option value="tinyurl" <?php if ($setting_url_shortener=='tinyurl') { echo 'selected="selected"'; } ?>>TinyURL.com</option>
 	</select>
 	<br />Specify which URL shortener should be used by Tweetable.
@@ -368,6 +384,12 @@ function tweetable_write_settingsmenu() {
 	<th scope="row">Campaign Tracking</th>
 	<td><label for="google_campaign_tags">
 	<input type="checkbox" name="google_campaign_tags" <?php echo $setting_google_campaign_tags; ?> /> Add Google Analytics campaign tags to auto-tweets.</label>
+	</td></tr>
+	
+	<tr valign="top">
+	<th scope="row">Remove Stylesheet</th>
+	<td><label for="remove_stylesheet">
+	<input type="checkbox" name="remove_stylesheet" <?php echo $setting_remove_stylesheet; ?> /> Check this if you want to <strong>not</strong> include the Tweetable stylesheet on your blog.</label>
 	</td></tr>
 	
 	</table>

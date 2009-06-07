@@ -5,11 +5,12 @@ Plugin URI: http://www.webmaster-source.com/tweetable-twitter-plugin-wordpress/
 Description: Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc.
 Author: Matt Harzewski (redwall_hp)
 Author URI: http://www.webmaster-source.com
-Version: 1.0.4
+Version: 1.0.5
 */
 
 
 
+/*** Version Checking. ***/
 global $wp_version;
 if (version_compare($wp_version, '2.7', '<')) {
 	exit("Tweetable requires WordPress 2.7 or greater.");
@@ -45,6 +46,8 @@ if (is_admin()) {
 
 
 /*** Template Tags ***/
+
+//Display the latest tweets by the Tweetable user
 function tweetable_latest_tweets($num=3) {
 
 	$twitter_user = get_option('tweetable_twitter_user');
@@ -66,6 +69,7 @@ function tweetable_latest_tweets($num=3) {
 }
 
 
+//Get the follower count of the Tweetable user. Pass FALSE to return instead of echo.
 function tweetable_follower_count($output=TRUE) {
 
 	$twitter_user = get_option('tweetable_twitter_user');
@@ -81,6 +85,7 @@ function tweetable_follower_count($output=TRUE) {
 }
 
 
+//Display a Tweetmeme button. Pass string 'compact' for smaller size.
 function tweetable_tweetmeme_button($type='full') {
 
 	$twitter_user = get_option('tweetable_twitter_user');
@@ -133,24 +138,40 @@ function tweetable_write_widget($args) {
 	extract($args);
 	$options = get_option('tweetable_widget_options');
 	$twitter_user = get_option('tweetable_twitter_user');
+	$tweet_prefix = get_option('tweetable_auto_tweet_prefix');
 	echo $before_widget;
 	if ($options['title']!='') {
 		echo "\n".$before_title; echo $options['title']; echo $after_title;
 	}
 	$latest = tweetable_get_recent_tweets();
+	$followers = $latest['tweets']['0']['user']['followers_count'];
+	$counter = 0;
+	if ($tweet_prefix != '') {
+		foreach ($latest['tweets'] as $tweet) {
+			if ( strpos($tweet['text'], $tweet_prefix) !== FALSE ) {
+				unset($latest['tweets'][$counter]);
+			}
+			$counter++;
+		}
+	}
 	echo '<ol class="tweetable_latest_tweets">';
-	for ( $counter=0; $counter <= ($options['num_tweets']-1); $counter += 1 ) {
+	$counter = 0;
+	foreach ( $latest['tweets'] as $tweet ) {
 		echo '<li class="tweetable_item">';
-		$date = date('F j, Y g:i', strtotime($latest['tweets'][$counter]['created_at']));
+		$date = date('F j, Y g:i', strtotime($tweet['created_at']));
 		echo '<span class="twitter_status">';
-		echo '<span class="status-text">'.make_clickable($latest['tweets'][$counter]['text']).'</span>';
+		echo '<span class="status-text">'.make_clickable($tweet['text']).'</span>';
 		echo '<span class="twitter_meta">'.$date.'</span>';
 		echo '</span>';
 		echo '</li>';
+		if ($counter == $options['num_tweets']-1) {
+			break;
+		}
+		$counter++;
 	}
 	echo '</ol>';
 	if ($options['follow_count'] == '1') {
-		echo '<span class="tweetable_follow">Follow <a href="http://twitter.com/'.$twitter_user.'">@'.$twitter_user.'</a> ('.$latest['tweets']['0']['user']['followers_count'].' followers)</span>';
+		echo '<span class="tweetable_follow">Follow <a href="http://twitter.com/'.$twitter_user.'">@'.$twitter_user.'</a> ('.$followers.' followers)</span>';
 	}
 	echo $after_widget;
 	
@@ -259,9 +280,11 @@ function tweetable_publish_tweet($post_id) {
 /*** Add scripts and stylesheets ***/
 function tweetable_frontend_styles_and_scripts() {
 
-	if (!is_admin()) {
-		wp_register_style('tweetable-admin', WP_PLUGIN_URL.'/tweetable/main_css.css');
-		wp_enqueue_style('tweetable-admin');
+	$setting_remove_stylesheet = get_option('tweetable_remove_stylesheet');
+
+	if (!is_admin() && !$setting_remove_stylesheet) {
+		wp_register_style('tweetable-frontend', WP_PLUGIN_URL.'/tweetable/main_css.css');
+		wp_enqueue_style('tweetable-frontend');
 	}
 
 }
@@ -270,6 +293,8 @@ function tweetable_frontend_styles_and_scripts() {
 
 
 /*** Helper Functions ***/
+
+//Return plugin path or URL
 function tweetable_get_plugin_dir($type='url') {
 
 	if ( !defined('WP_CONTENT_URL') )
@@ -283,6 +308,7 @@ function tweetable_get_plugin_dir($type='url') {
 
 
 
+//Check Twitter API Limit
 function tweetable_api_rate_status() {
 
 	$user_key = get_option('tweetable_access_token');
@@ -297,6 +323,7 @@ function tweetable_api_rate_status() {
 
 
 
+//Returns the latest tweet by the Tweetable user
 function tweetable_fetch_latest_tweet($rate_limit='check') {
 
 	$user_key = get_option('tweetable_access_token');
@@ -338,6 +365,7 @@ function tweetable_fetch_latest_tweet($rate_limit='check') {
 
 
 
+//Returns the latest tweets by the user
 function tweetable_get_recent_tweets($rate_limit='check') {
 
 	$twitter_user = get_option('tweetable_twitter_user');
