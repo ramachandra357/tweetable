@@ -5,8 +5,8 @@ Author URI: http://www.webmaster-source.com
 Donate link: http://www.webmaster-source.com/donate/
 Tags: twitter, tweet, tweetable, wordpress, plugin
 Requires at least: 2.7
-Tested up to: 2.7.1
-Stable tag: 1.0.5
+Tested up to: 2.8
+Stable tag: 1.0.6
 
 Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc. Uses OAuth for user authentication, so your Twitter password is not stored in plain text.
 
@@ -101,3 +101,7 @@ Fixed error when Safe Mode is on, stopped Shorten URL icon from disappearing whe
 * Added Tweetable "Tweet This" bookmarklet. You can find it on the "Tweet" page.
 * Added "3.ly" to the supported URL shorteners.
 * Added a link to reset the setup wizard if something goes wrong and it doesn't complete.
+
+= Version 1.0.6 =
+* Added an option to the widget for a "widget title link," so you can optionally link your widget's title to your Twitter profile.
+* Added an upper limit for the "Number of Tweets to Show" option in the widget (20), to prevent unexpected results if set too high.
