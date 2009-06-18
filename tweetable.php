@@ -139,10 +139,18 @@ function tweetable_write_widget($args) {
 	$options = get_option('tweetable_widget_options');
 	$twitter_user = get_option('tweetable_twitter_user');
 	$tweet_prefix = get_option('tweetable_auto_tweet_prefix');
+	
 	echo $before_widget;
-	if ($options['title']!='') {
-		echo "\n".$before_title; echo $options['title']; echo $after_title;
+	
+	if ($options['title'] != '') {
+		if ($options['title_link'] == '') {
+			$widget_title = $options['title'];
+		} else {
+			$widget_title = '<a href="'.$options['title_link'].'">' . $options['title'] . '</a>';
+		}
+		echo "\n".$before_title; echo $widget_title; echo $after_title;
 	}
+	
 	$latest = tweetable_get_recent_tweets();
 	$followers = $latest['tweets']['0']['user']['followers_count'];
 	$counter = 0;
@@ -184,7 +192,9 @@ function tweetable_widget_options() {
 		$options['title'] = $_POST['tweetable_title'];
 		//$options['num_tweets'] = $_POST['tweetable_num_tweets'];
 		($_POST['tweetable_num_tweets'] < 1) ? $options['num_tweets'] = '1' : $options['num_tweets'] = $_POST['tweetable_num_tweets'];
+		($_POST['tweetable_num_tweets'] > 20) ? $options['num_tweets'] = '20' : $options['num_tweets'] = $_POST['tweetable_num_tweets'];
 		($_POST['tweetable_follow_count']) ? $options['follow_count'] = '1' : $options['follow_count'] = '0';
+		($_POST['tweetable_title_link'] == 'http://') ? $options['title_link'] = '' : $options['title_link'] = $_POST['tweetable_title_link'];
 		update_option('tweetable_widget_options', $options);
 	}
 	
@@ -192,10 +202,13 @@ function tweetable_widget_options() {
 	$followcount = ($options['follow_count']=="1") ? 'checked="checked"' : '';
 	$twitter_user = get_option('tweetable_twitter_user');
 	
+	($options['title_link'] == '') ? $options['title_link'] = 'http://' : $options['title_link'] = $options['title_link'];
+	
 	?>
 	<p>Twitter Acount: <em><?php echo $twitter_user; ?></em></p>
 	<input type="hidden" name="tweetable_save_widget" value="yes" />
 	<p><label for="tweetable_title">Widget Title: <input class="widefat" id="tweetable_title" name="tweetable_title" type="text" value="<?php echo $options['title']; ?>" /></label></p>
+	<p><label for="tweetable_title_link">Widget Title Link: <input class="widefat" id="tweetable_title_link" name="tweetable_title_link" type="text" value="<?php echo $options['title_link']; ?>" /></label></p>
 	<p><label for="tweetable_num_tweets">Number of Tweets to Show: <input class="widefat" id="tweetable_num_tweets" name="tweetable_num_tweets" type="text" value="<?php echo $options['num_tweets']; ?>" /></label></p>
 	<p><label for="tweetable_follow_count">Show follower count: <input id="tweetable_follow_count" name="tweetable_follow_count" type="checkbox" <?php echo $followcount; ?> /></label></p>
 	<?php
