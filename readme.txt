@@ -78,7 +78,7 @@ There are a few template tags available in Tweetable.
 
 
 
-== Version history ==
+== Changelog ==
 
 = Version 1.0 =
 Initial Release
