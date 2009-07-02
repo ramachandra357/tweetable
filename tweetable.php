@@ -33,6 +33,7 @@ add_filter('the_content', 'tweetable_add_tweetmeme');
 add_action('widgets_init', 'tweetable_create_widget');
 add_action('init', 'tweetable_frontend_styles_and_scripts');
 add_action('publish_post', 'tweetable_publish_tweet', 100);
+add_filter('plugin_action_links', 'tweetable_add_plugin_links', 10, 2);
 
 
 
@@ -422,6 +423,20 @@ function tweetable_get_recent_tweets($rate_limit='check') {
 	
 	return $latest_tweets;
 	
+}
+
+
+
+
+/*** Plugins Menu Additions ***/
+function tweetable_add_plugin_links($links, $file) {
+	static $this_plugin;
+	(!$this_plugin) ? $this_plugin = plugin_basename(__FILE__) : $this_plugin = $this_plugin;
+	if ($file == $this_plugin) {
+		$settings_link = '<a href="admin.php?page=tweetable_settings">Settings</a>';
+		array_push($links, $settings_link);
+	}
+	return $links;
 }
 
 
