@@ -422,7 +422,8 @@ function tweetable_menu_twitter_timeline($rate_limit) {
 			foreach ($friend_tweets_get->status as $tweet) {
 				$friend_tweets_new[$count]['created_at'] = (string)$tweet->created_at;
 				$friend_tweets_new[$count]['id'] = (string)$tweet->id;
-				$friend_tweets_new[$count]['text'] = (string)$tweet->text;
+				//$friend_tweets_new[$count]['text'] = (string)$tweet->text;
+				$friend_tweets_new[$count]['text'] = preg_replace('/\#([a-zA-Z0-9_]+)/', '<a href="'.tweetable_get_plugin_dir('url').'/dialog.php?show=hashtag&hashtag=\\1&KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox hashtag" title="Hashtag Search">#\\1</a>', (string)$tweet->text);
 				$friend_tweets_new[$count]['source'] = (string)$tweet->source;
 				$friend_tweets_new[$count]['in_reply_to_status_id'] = (string)$tweet->in_reply_to_status_id;
 				$friend_tweets_new[$count]['in_reply_to_user_id'] = (string)$tweet->in_reply_to_user_id;

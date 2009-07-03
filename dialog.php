@@ -5,19 +5,25 @@ switch($_GET['show']) {
 
 	case 'documentation':
 		$title = 'Documentation';
-		documentation();
+		documentation($title);
+	break;
+	
+	case 'hashtag':
+		$hashtag = $_GET['hashtag'];
+		$title = 'Hashtag Search: '.$hashtag;
+		hashtag($title, $hashtag);
 	break;
 	
 	default:
 		$title = 'Documentation';
-		documentation();
+		documentation($title);
 	break;
 	
 }
 
 
 
-function documentation() {
+function documentation($title) {
 	?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -27,6 +33,7 @@ function documentation() {
 <style type="text/css">
 body {
 	margin: 20px;
+	background-color: #f9f9f9;
 }
 h1,h2,h3,h4 {
 	margin: 0px;
@@ -48,6 +55,59 @@ code {
 	$readme = preg_replace('/== (.*?) ==/', '<h3>\\1</h3>', $readme);
 	$readme = preg_replace('/= (.*?) =/', '<h4>\\1</h4>', $readme);
 	echo $readme;
+	echo '</body></html>';
+}
+
+
+
+function hashtag($title, $hashtag) {
+	if ( !defined('WP_CONTENT_URL') ) { define( 'WP_CONTENT_URL', get_option('siteurl') . '/wp-content'); }
+	?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title><?php echo $title; ?></title>
+<link rel='stylesheet' href='http://wp.ntugo.com/wp-admin/load-styles.php?c=1&amp;dir=ltr&amp;load=global' type='text/css' media='all' />
+<link rel='stylesheet' id='colors-css'  href='http://wp.ntugo.com/wp-admin/css/colors-fresh.css?ver=20090610' type='text/css' media='all' />
+<link rel="stylesheet" href="<?php echo tweetable_get_plugin_dir('url'); ?>/admin_css.css" type="text/css" />
+<style>
+.search-div {
+	margin-left: 15px;
+}
+</style>
+</head>
+<body>
+	<?php
+	$twitter = new Twitter_API();
+	echo '<div class="search-div">';
+	echo '<h3>#'.$hashtag.'</h3>';
+	echo '<div class="twitter_timeline">';
+	echo '<ol id="tweetable-timeline">';
+	$results = $twitter->search($hashtag, 'en', '30');
+	foreach ($results->entry as $tweet) {
+		$status_id = explode(':', $tweet->id);
+		$status_id = $status_id[2];
+		$status_user = explode(' (', $tweet->author->name);
+		$status_user = $status_user[0];
+		echo '<li class="status" id="'.$status_id.'">';
+		echo '<span class="twitter_thumb"><img src="'.$tweet->link[1]['href'].'" width="48" height="48" alt="" /></span>';
+		echo '<span class="twitter_status">';
+		echo '<strong><a class="user" href="'.$tweet->link[0]['href'].'">'.$status_user.'</a></strong> ';
+		echo '<span class="status-text">'.make_clickable($tweet->content).'</span>';
+    	$date = date('F j, Y g:i', strtotime($tweet->published));
+		echo '<span class="twitter_meta">'.$date.'</span>';
+		echo '</span>';
+    	/*echo '<span class="twitter_functions">';
+    	echo '<a class="reply" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/reply.png" alt="Reply" title="Reply" /></a>&nbsp;';
+    	echo '<a class="retweet" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/retweet.png" alt="Retweet" title="Retweet" /></a>';
+    	echo '</span>';*/
+		echo '<br style="clear:both" />';
+		echo '</li>';
+	}
+	echo '</ol>';
+	echo '</div>';
+	echo '</div>';
 	echo '</body></html>';
 }
 

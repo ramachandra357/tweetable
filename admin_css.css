@@ -83,3 +83,9 @@ p.api-rate {
 .tw-hide {
 	visibility:hidden;
 }
+
+a.hashtag {
+	text-decoration: none;
+	font-family: monospace;
+	color: #756666;
+}
