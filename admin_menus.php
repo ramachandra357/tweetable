@@ -86,7 +86,7 @@ function tweetable_admin_page_footer() {
 
 	echo '<div style="margin-top:45px; font-size:0.87em;">';
 	echo '<div style="float:right;"><a href="http://www.webmaster-source.com/static/donate_plugin.php?plugin=tweetable&amp;KeepThis=true&amp;TB_iframe=true&amp;height=250&amp;width=550" class="thickbox" title="Donate"><img src="'.tweetable_get_plugin_dir('url').'/images/donate.gif" alt="Donate" /></a></div>';
-	echo '<div><a href="'.tweetable_get_plugin_dir('url').'/readme.txt?KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox" title="Documentation">Documentation</a> | <a href="http://www.webmaster-source.com/tweetable-twitter-plugin-wordpress/">Tweetable Homepage</a></div>';
+	echo '<div><a href="'.tweetable_get_plugin_dir('url').'/dialog.php?show=documentation&KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox" title="Documentation">Documentation</a> | <a href="http://www.webmaster-source.com/tweetable-twitter-plugin-wordpress/">Tweetable Homepage</a></div>';
 	echo '</div>';
 	
 	echo '</div>';
