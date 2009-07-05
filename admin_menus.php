@@ -253,6 +253,7 @@ function tweetable_write_trackmenu() {
 			echo '<ol id="tweetable-timeline">';
 			$results = $twitter->search($search, 'en', '10');
 			foreach ($results->entry as $tweet) {
+				$tweet->content = preg_replace('/<a\shref=\"([^\"]*)\"><b>\#(.*)<\/b><\/a>/siU', '<a href="'.tweetable_get_plugin_dir('url').'/dialog.php?show=hashtag&hashtag=\\2&KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox hashtag" title="Hashtag Search">#\\2</a>', $tweet->content);
 				$status_id = explode(':', $tweet->id);
 				$status_id = $status_id[2];
 				$status_user = explode(' (', $tweet->author->name);

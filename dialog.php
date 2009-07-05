@@ -86,6 +86,7 @@ function hashtag($title, $hashtag) {
 	echo '<ol id="tweetable-timeline">';
 	$results = $twitter->search($hashtag, 'en', '30');
 	foreach ($results->entry as $tweet) {
+		$tweet->content = preg_replace('/<a\shref=\"([^\"]*)\">\#<b>(.*)<\/b><\/a>/siU', '<a href="'.tweetable_get_plugin_dir('url').'/dialog.php?show=hashtag&hashtag=\\2&KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox hashtag" title="Hashtag Search">#\\2</a>', $tweet->content);
 		$status_id = explode(':', $tweet->id);
 		$status_id = $status_id[2];
 		$status_user = explode(' (', $tweet->author->name);
@@ -98,9 +99,6 @@ function hashtag($title, $hashtag) {
     	$date = date('F j, Y g:i', strtotime($tweet->published));
 		echo '<span class="twitter_meta">'.$date.'</span>';
 		echo '</span>';
-    	/*echo '<span class="twitter_functions">';
-    	echo '<a class="reply" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/reply.png" alt="Reply" title="Reply" /></a>&nbsp;';
-    	echo '<a class="retweet" href="#"><img src="'.tweetable_get_plugin_dir('url').'/images/retweet.png" alt="Retweet" title="Retweet" /></a>';
     	echo '</span>';*/
 		echo '<br style="clear:both" />';
 		echo '</li>';
