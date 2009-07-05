@@ -86,7 +86,7 @@ function tweetable_admin_page_footer() {
 
 	echo '<div style="margin-top:45px; font-size:0.87em;">';
 	echo '<div style="float:right;"><a href="http://www.webmaster-source.com/static/donate_plugin.php?plugin=tweetable&amp;KeepThis=true&amp;TB_iframe=true&amp;height=250&amp;width=550" class="thickbox" title="Donate"><img src="'.tweetable_get_plugin_dir('url').'/images/donate.gif" alt="Donate" /></a></div>';
-	echo '<div><a href="'.tweetable_get_plugin_dir('url').'/readme.txt?KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox" title="Documentation">Documentation</a> | <a href="http://www.webmaster-source.com/tweetable-twitter-plugin-wordpress/">Tweetable Homepage</a></div>';
+	echo '<div><a href="'.tweetable_get_plugin_dir('url').'/dialog.php?show=documentation&KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox" title="Documentation">Documentation</a> | <a href="http://www.webmaster-source.com/tweetable-twitter-plugin-wordpress/">Tweetable Homepage</a></div>';
 	echo '</div>';
 	
 	echo '</div>';
@@ -253,6 +253,7 @@ function tweetable_write_trackmenu() {
 			echo '<ol id="tweetable-timeline">';
 			$results = $twitter->search($search, 'en', '10');
 			foreach ($results->entry as $tweet) {
+				$tweet->content = preg_replace('/<a\shref=\"([^\"]*)\"><b>\#(.*)<\/b><\/a>/siU', '<a href="'.tweetable_get_plugin_dir('url').'/dialog.php?show=hashtag&hashtag=\\2&KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox hashtag" title="Hashtag Search">#\\2</a>', $tweet->content);
 				$status_id = explode(':', $tweet->id);
 				$status_id = $status_id[2];
 				$status_user = explode(' (', $tweet->author->name);
@@ -422,7 +423,8 @@ function tweetable_menu_twitter_timeline($rate_limit) {
 			foreach ($friend_tweets_get->status as $tweet) {
 				$friend_tweets_new[$count]['created_at'] = (string)$tweet->created_at;
 				$friend_tweets_new[$count]['id'] = (string)$tweet->id;
-				$friend_tweets_new[$count]['text'] = (string)$tweet->text;
+				//$friend_tweets_new[$count]['text'] = (string)$tweet->text;
+				$friend_tweets_new[$count]['text'] = preg_replace('/\#([a-zA-Z0-9_]+)/', '<a href="'.tweetable_get_plugin_dir('url').'/dialog.php?show=hashtag&hashtag=\\1&KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox hashtag" title="Hashtag Search">#\\1</a>', (string)$tweet->text);
 				$friend_tweets_new[$count]['source'] = (string)$tweet->source;
 				$friend_tweets_new[$count]['in_reply_to_status_id'] = (string)$tweet->in_reply_to_status_id;
 				$friend_tweets_new[$count]['in_reply_to_user_id'] = (string)$tweet->in_reply_to_user_id;

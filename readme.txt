@@ -6,7 +6,7 @@ Donate link: http://www.webmaster-source.com/donate/
 Tags: twitter, tweet, tweetable, wordpress, plugin
 Requires at least: 2.7
 Tested up to: 2.8
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 
 Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc. Uses OAuth for user authentication, so your Twitter password is not stored in plain text.
 
@@ -78,7 +78,7 @@ There are a few template tags available in Tweetable.
 
 
 
-== Version history ==
+== Changelog ==
 
 = Version 1.0 =
 Initial Release
@@ -105,3 +105,9 @@ Fixed error when Safe Mode is on, stopped Shorten URL icon from disappearing whe
 = Version 1.0.6 =
 * Added an option to the widget for a "widget title link," so you can optionally link your widget's title to your Twitter profile.
 * Added an upper limit for the "Number of Tweets to Show" option in the widget (20), to prevent unexpected results if set too high.
+
+= Version 1.0.7 =
+* Added #hashtag support. Any hashtags in tweets are made into clickable triggers that open a dialog with a Twitter Search of that hashtag.
+* The "Documentation" link in the Tweetable page footers is now parsed into (much more legible) HTML.
+* Added "Settings" link near the Activate/Deactivate and Edit links on the plugins tab.
+* Updated README, changed "Version History" to "Changelog."
