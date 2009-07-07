@@ -50,7 +50,7 @@ code {
 	$readme = make_clickable(nl2br(wp_specialchars($readme)));
 	$readme = preg_replace('/`(.*?)`/', '<code>\\1</code>', $readme);
 	$readme = preg_replace('/[\040]\*\*(.*?)\*\*/', ' <strong>\\1</strong>', $readme);
-	$readme = preg_replace('/[\040]\*(.*?)\*/', ' <em>\\1</em>', $readme);
+	$readme = preg_replace('/[\040]\*[^\040](.*?)\*/', ' <em>\\1</em>', $readme);
 	$readme = preg_replace('/=== (.*?) ===/', '<h2>\\1</h2>', $readme);
 	$readme = preg_replace('/== (.*?) ==/', '<h3>\\1</h3>', $readme);
 	$readme = preg_replace('/= (.*?) =/', '<h4>\\1</h4>', $readme);
@@ -99,7 +99,7 @@ function hashtag($title, $hashtag) {
     	$date = date('F j, Y g:i', strtotime($tweet->published));
 		echo '<span class="twitter_meta">'.$date.'</span>';
 		echo '</span>';
-    	echo '</span>';*/
+    	echo '</span>';
 		echo '<br style="clear:both" />';
 		echo '</li>';
 	}
