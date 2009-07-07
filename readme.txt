@@ -6,7 +6,7 @@ Donate link: http://www.webmaster-source.com/donate/
 Tags: twitter, tweet, tweetable, wordpress, plugin
 Requires at least: 2.7
 Tested up to: 2.8
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 
 Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc. Uses OAuth for user authentication, so your Twitter password is not stored in plain text.
 
@@ -80,20 +80,18 @@ There are a few template tags available in Tweetable.
 
 == Changelog ==
 
-= Version 1.0 =
-Initial Release
+= Version 1.0.8 =
+The 1.0.7 update didn't go over properly. Missing files, stuff like that. 1.0.8 should fix any problems.
 
-= Version 1.0.1 =
-Fixed issue with items on the Track screen not deleting, PHP4 detection problems.
+= Version 1.0.7 =
+* Added #hashtag support. Any hashtags in tweets are made into clickable triggers that open a dialog with a Twitter Search of that hashtag.
+* The "Documentation" link in the Tweetable page footers is now parsed into (much more legible) HTML.
+* Added "Settings" link near the Activate/Deactivate and Edit links on the plugins tab.
+* Updated README, changed "Version History" to "Changelog."
 
-= Version 1.0.2 =
-Fixed bug triggering fatal error on all installations.
-
-= Version 1.0.3 =
-Fluid-width dashboard widget (with loading throbber), 140-char limit check when posting updates, AJAX calls include token for security.
-
-= Version 1.0.4 =
-Fixed error when Safe Mode is on, stopped Shorten URL icon from disappearing when it finished blinking.
+= Version 1.0.6 =
+* Added an option to the widget for a "widget title link," so you can optionally link your widget's title to your Twitter profile.
+* Added an upper limit for the "Number of Tweets to Show" option in the widget (20), to prevent unexpected results if set too high.
 
 = Version 1.0.5 =
 * Auto-tweets no longer show-up in the sidebar widget, as long as you specify a tweet prefix in the settings.
@@ -102,12 +100,17 @@ Fixed error when Safe Mode is on, stopped Shorten URL icon from disappearing whe
 * Added "3.ly" to the supported URL shorteners.
 * Added a link to reset the setup wizard if something goes wrong and it doesn't complete.
 
-= Version 1.0.6 =
-* Added an option to the widget for a "widget title link," so you can optionally link your widget's title to your Twitter profile.
-* Added an upper limit for the "Number of Tweets to Show" option in the widget (20), to prevent unexpected results if set too high.
+= Version 1.0.4 =
+Fixed error when Safe Mode is on, stopped Shorten URL icon from disappearing when it finished blinking.
 
-= Version 1.0.7 =
-* Added #hashtag support. Any hashtags in tweets are made into clickable triggers that open a dialog with a Twitter Search of that hashtag.
-* The "Documentation" link in the Tweetable page footers is now parsed into (much more legible) HTML.
-* Added "Settings" link near the Activate/Deactivate and Edit links on the plugins tab.
-* Updated README, changed "Version History" to "Changelog."
+= Version 1.0.3 =
+Fluid-width dashboard widget (with loading throbber), 140-char limit check when posting updates, AJAX calls include token for security.
+
+= Version 1.0.2 =
+Fixed bug triggering fatal error on all installations.
+
+= Version 1.0.1 =
+Fixed issue with items on the Track screen not deleting, PHP4 detection problems.
+
+= Version 1.0 =
+Initial Release
