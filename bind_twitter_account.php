@@ -168,7 +168,7 @@ if ($stage == '5') {
 ?>
 
 <br />
-<small><a href="admin.php?page=tweetable/bind_twitter_account.php&installing=1&reset_account=1&step=1">[Restart Setup]</a></small>
+<small><a href="admin.php?page=tweetable_install&installing=1&reset_account=1&step=1">[Restart Setup]</a></small>
 
 </div>
 </div>

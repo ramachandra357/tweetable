@@ -28,6 +28,10 @@ function tweetable_add_admin_menus() {
 	add_submenu_page(__FILE__, "Tweetable Twitter Plugin &rsaquo; Track", "Track", $main_menu_permission, 'tweetable_track', "tweetable_write_trackmenu");
 	
 	add_submenu_page(__FILE__, "Tweetable Twitter Plugin &rsaquo; Settings", "Settings", 'edit_themes', 'tweetable_settings', "tweetable_write_settingsmenu");
+	
+	if (!get_option('tweetable_account_activated')) {
+		add_submenu_page(__FILE__, "Tweetable Twitter Plugin &rsaquo; Install", "Install", 'edit_themes', 'tweetable_install', "tweetable_write_installer");
+	}
 
 }
 
@@ -42,7 +46,7 @@ function tweetable_install_check() {
 			$admin_url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 			$admin_url_split = explode('/wp-admin/', $admin_url);
 			$admin_url = htmlentities($admin_url_split[0]);
-			wp_redirect($admin_url.'/wp-admin/admin.php?page=tweetable/bind_twitter_account.php&installing=1');
+			wp_redirect($admin_url.'/wp-admin/admin.php?page=tweetable_install&installing=1');
 		}
 	}
 	
@@ -102,6 +106,14 @@ function tweetable_add_menu_favorite($actions) {
 	$actions['admin.php?page=tweetable/admin_menus.php'] = array('Twitter', 'edit_themes');
 	return $actions;
 	
+}
+
+
+
+
+/*** Twitter Menu ***/
+function tweetable_write_installer() {
+	require_once('bind_twitter_account.php');
 }
 
 
