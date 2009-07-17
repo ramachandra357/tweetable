@@ -5,8 +5,8 @@ Author URI: http://www.webmaster-source.com
 Donate link: http://www.webmaster-source.com/donate/
 Tags: twitter, tweet, tweetable, wordpress, plugin
 Requires at least: 2.7
-Tested up to: 2.8
-Stable tag: 1.0.9
+Tested up to: 2.8.1
+Stable tag: 1.1.0
 
 Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc. Uses OAuth for user authentication, so your Twitter password is not stored in plain text.
 
@@ -70,6 +70,20 @@ There are a few template tags available in Tweetable.
 
 
 
+== Hooks ==
+You can extend Tweetable by tying your theme or plugin functions into the included hooks.
+
+= Filter: tweetable_autotweet_permalink =
+Runs when a post is tweeted, before the URL is shortened. Parameters: $permalink.
+
+= Filter: tweetable_autotweet_title =
+Runs after the post title is retrieved, but before it is merged into the string to be tweeted. Parameters: $title.
+
+= Filter: tweetable_autotweet_tweet =
+Runs immediately before the auto-tweet is sent, after the title and link are combined and (if necessary) shortened. Parameters: $tweet.
+
+
+
 == Screenshots ==
 1. The Twitter screen in the WordPress admin
 2. Tweetable settings
@@ -79,6 +93,10 @@ There are a few template tags available in Tweetable.
 
 
 == Changelog ==
+
+= Version 1.1.0 =
+* Fixed the Change Account link in the plugin settings.
+* Added three filter hooks to the auto-tweet subroutine.
 
 = Version 1.0.9 =
 Fix for the "You do not have sufficient permissions to access this page" error when trying to run the installer under WordPress 2.8.1.
