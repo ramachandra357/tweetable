@@ -277,10 +277,13 @@ function tweetable_publish_tweet($post_id) {
 			$permalink = urlencode($permalink . $tags);
 		}
 		
+		$permalink = apply_filters('tweetable_autotweet_permalink', $permalink);
 		$permalink = $twitter->shorten_url($permalink, $shortener);
 		$title = $tweet_prefix.' '.$post->post_title;
+		$title = apply_filters('tweetable_autotweet_title', $title);
 		
 		$tweet = $twitter->fit_tweet($title, $permalink);
+		$tweet = apply_filters('tweetable_autotweet_tweet', $tweet);
 		
 		$update = $twitter->update_status($tweet, $user_key, $user_key_secret);
 	
