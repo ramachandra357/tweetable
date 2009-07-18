@@ -29,7 +29,7 @@ function tweetable_add_admin_menus() {
 	
 	add_submenu_page(__FILE__, "Tweetable Twitter Plugin &rsaquo; Settings", "Settings", 'edit_themes', 'tweetable_settings', "tweetable_write_settingsmenu");
 	
-	if (!get_option('tweetable_account_activated') && $_GET['reset_account'] != '1') {
+	if (!get_option('tweetable_account_activated') || isset($_GET['reset_account'])) {
 		add_submenu_page(__FILE__, "Tweetable Twitter Plugin &rsaquo; Install", "Install", 'edit_themes', 'tweetable_install', "tweetable_write_installer");
 	}
 
