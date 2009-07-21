@@ -387,6 +387,9 @@ public function shorten_url($the_url, $shortener='is.gd', $api_key='', $user='')
 		} else {
 			$response = "";
 		}
+	} elseif ($shortener=="su.pr") {
+		$url = "http://su.pr/api/simpleshorten?url={$the_url}";
+		$response = $this->send_request($url, 'GET');
 	} elseif ($shortener=="tr.im") {
 		$url = "http://api.tr.im/api/trim_simple?url={$the_url}";
 		$response = $this->send_request($url, 'GET');

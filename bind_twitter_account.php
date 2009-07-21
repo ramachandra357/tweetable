@@ -1,6 +1,13 @@
 <?php /*require_once(WP_CONTENT_DIR.'/plugins/'.plugin_basename(dirname(__FILE__)).'/mh_twitter_class.php');*/ ?>
 
 <div class="wrap">
+
+<?php
+if (!empty($_GET['reset_account']) && $_GET['step']=='1') {
+	echo '<div id="message" class="updated fade"><p>If you are only changing your Twitter account, you can skip this screen and use the same application you registered before.</p></div>';
+}
+?>
+
 <h2>Tweetable Setup</h2>
 <div style="width:700px;">
 
