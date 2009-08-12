@@ -400,24 +400,28 @@ function tweetable_get_recent_tweets($rate_limit='check') {
 			$latest_tweets_get = $twitter->user_timeline($twitter_user, $user_key, $user_key_secret);
 			//print_r($latest_tweets_get);
 			$count = 0;
-			foreach ($latest_tweets_get->status as $tweet) {
-				$latest_tweets_new[$count]['created_at'] = (string)$tweet->created_at;
-				$latest_tweets_new[$count]['id'] = (string)$tweet->id;
-				$latest_tweets_new[$count]['text'] = (string)$tweet->text;
-				$latest_tweets_new[$count]['source'] = (string)$tweet->source;
-				$latest_tweets_new[$count]['in_reply_to_status_id'] = (string)$tweet->in_reply_to_status_id;
-				$latest_tweets_new[$count]['in_reply_to_user_id'] = (string)$tweet->in_reply_to_user_id;
-				$latest_tweets_new[$count]['favorited'] = (string)$tweet->favorited;
-				$latest_tweets_new[$count]['in_reply_to_screen_name'] = (string)$tweet->in_reply_to_screen_name;
-				$latest_tweets_new[$count]['user']['id'] = (string)$tweet->user->id;
-				$latest_tweets_new[$count]['user']['name'] = (string)$tweet->user->name;
-				$latest_tweets_new[$count]['user']['screen_name'] = (string)$tweet->user->screen_name;
-				$latest_tweets_new[$count]['user']['profile_image_url'] = (string)$tweet->user->profile_image_url;
-				$latest_tweets_new[$count]['user']['url'] = (string)$tweet->user->url;
-				$latest_tweets_new[$count]['user']['followers_count'] = (string)$tweet->user->followers_count;
-				$latest_tweets_new[$count]['user']['friends_count'] = (string)$tweet->user->friends_count;
-				$latest_tweets_new[$count]['user']['created_at'] = (string)$tweet->user->created_at;
-				$count++;
+			if (!isset($latest_tweets_get->tw_error)) {
+				foreach ($latest_tweets_get->status as $tweet) {
+					$latest_tweets_new[$count]['created_at'] = (string)$tweet->created_at;
+					$latest_tweets_new[$count]['id'] = (string)$tweet->id;
+					$latest_tweets_new[$count]['text'] = (string)$tweet->text;
+					$latest_tweets_new[$count]['source'] = (string)$tweet->source;
+					$latest_tweets_new[$count]['in_reply_to_status_id'] = (string)$tweet->in_reply_to_status_id;
+					$latest_tweets_new[$count]['in_reply_to_user_id'] = (string)$tweet->in_reply_to_user_id;
+					$latest_tweets_new[$count]['favorited'] = (string)$tweet->favorited;
+					$latest_tweets_new[$count]['in_reply_to_screen_name'] = (string)$tweet->in_reply_to_screen_name;
+					$latest_tweets_new[$count]['user']['id'] = (string)$tweet->user->id;
+					$latest_tweets_new[$count]['user']['name'] = (string)$tweet->user->name;
+					$latest_tweets_new[$count]['user']['screen_name'] = (string)$tweet->user->screen_name;
+					$latest_tweets_new[$count]['user']['profile_image_url'] = (string)$tweet->user->profile_image_url;
+					$latest_tweets_new[$count]['user']['url'] = (string)$tweet->user->url;
+					$latest_tweets_new[$count]['user']['followers_count'] = (string)$tweet->user->followers_count;
+					$latest_tweets_new[$count]['user']['friends_count'] = (string)$tweet->user->friends_count;
+					$latest_tweets_new[$count]['user']['created_at'] = (string)$tweet->user->created_at;
+					$count++;
+				}
+			} else {
+				$latest_tweets_new[0]['text'] = $latest_tweets_get->tw_error;
 			}
 			$latest_tweets = array( 'tweets' => $latest_tweets_new, 'cache_time' => mktime() );
 			update_option('tweetable_recent_tweets_cache', $latest_tweets);

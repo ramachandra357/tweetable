@@ -32,7 +32,14 @@ public function user_timeline($user, $auth_user='', $auth_pass='') {
 
 	$url = "http://twitter.com/statuses/user_timeline/{$user}.xml";
 	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	$xml = new SimpleXmlElement($response);
+	try {
+		$xml = new SimpleXmlElement($response);
+	}
+	catch (Exception $e) {
+		$xml = new stdClass;
+		$xml->status = array("0" => array("status" => ""));
+		$xml->tw_error = "<strong>Error:</strong> Could not load tweets.";
+	}
 	return $xml;
 
 }
