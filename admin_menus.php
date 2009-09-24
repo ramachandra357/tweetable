@@ -366,6 +366,7 @@ function tweetable_write_settingsmenu() {
 	<option value="is.gd" <?php if ($setting_url_shortener=='is.gd') { echo 'selected="selected"'; } ?>>Is.gd</option>
 	<option value="tr.im" <?php if ($setting_url_shortener=='tr.im') { echo 'selected="selected"'; } ?>>Tr.im</option>
 	<option value="su.pr" <?php if ($setting_url_shortener=='su.pr') { echo 'selected="selected"'; } ?>>Su.pr</option>
+	<option value="ow.ly" <?php if ($setting_url_shortener=='ow.ly') { echo 'selected="selected"'; } ?>>Ow.ly</option>
 	<option value="3.ly" <?php if ($setting_url_shortener=='3.ly') { echo 'selected="selected"'; } ?>>3.ly</option>
 	<option value="tinyurl" <?php if ($setting_url_shortener=='tinyurl') { echo 'selected="selected"'; } ?>>TinyURL.com</option>
 	</select>
