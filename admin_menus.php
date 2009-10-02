@@ -312,6 +312,8 @@ function tweetable_write_settingsmenu() {
 		$post_twitter_user_level = $wpdb->escape($_POST['twitter_user_level']);
 		$post_tweetmeme = $wpdb->escape($_POST['tweetmeme']);
 		$post_url_shortener = $wpdb->escape($_POST['url_shortener']);
+		$post_shortener_login = $wpdb->escape($_POST['shortener_login']);
+		$post_shortener_apikey = $wpdb->escape($_POST['shortener_apikey']);
 		$post_auto_tweet_prefix = $wpdb->escape($_POST['auto_tweet_prefix']);
 		($_POST['auto_tweet_posts']) ? $post_auto_tweet_posts = '1' : $post_auto_tweet_posts = '0';
 		($_POST['google_campaign_tags']) ? $post_google_campaign_tags = '1' : $post_google_campaign_tags = '0';
@@ -319,6 +321,8 @@ function tweetable_write_settingsmenu() {
 		update_option("tweetable_main_menu_permission", $post_twitter_user_level);
 		update_option("tweetable_tweetmeme_button_mode", $post_tweetmeme);
 		update_option("tweetable_url_shortener", $post_url_shortener);
+		update_option("tweetable_shortener_login", $post_shortener_login);
+		update_option("tweetable_shortener_apikey", $post_shortener_apikey);
 		update_option("tweetable_auto_tweet_posts", $post_auto_tweet_posts);
 		update_option("tweetable_auto_tweet_prefix", $post_auto_tweet_prefix);
 		update_option("tweetable_google_campaign_tags", $post_google_campaign_tags);
@@ -328,6 +332,8 @@ function tweetable_write_settingsmenu() {
 	$setting_twitter_user_level = get_option("tweetable_main_menu_permission");
 	$setting_tweetmeme = get_option("tweetable_tweetmeme_button_mode");
 	$setting_url_shortener = get_option('tweetable_url_shortener');
+	$setting_shortener_login = get_option('tweetable_shortener_login');
+	$setting_shortener_apikey = get_option('tweetable_shortener_apikey');
 	$setting_auto_tweet = get_option('tweetable_auto_tweet_posts');
 	($setting_auto_tweet == '1') ? $setting_auto_tweet = 'checked="checked"' : $setting_auto_tweet = '';
 	$setting_auto_tweet_prefix = get_option('tweetable_auto_tweet_prefix');
@@ -364,6 +370,7 @@ function tweetable_write_settingsmenu() {
 	<td>
 	<select name="url_shortener" id="url_shortener">
 	<option value="is.gd" <?php if ($setting_url_shortener=='is.gd') { echo 'selected="selected"'; } ?>>Is.gd</option>
+	<option value="bit.ly" <?php if ($setting_url_shortener=='bit.ly') { echo 'selected="selected"'; } ?>>Bit.ly</option>
 	<option value="tr.im" <?php if ($setting_url_shortener=='tr.im') { echo 'selected="selected"'; } ?>>Tr.im</option>
 	<option value="su.pr" <?php if ($setting_url_shortener=='su.pr') { echo 'selected="selected"'; } ?>>Su.pr</option>
 	<option value="ow.ly" <?php if ($setting_url_shortener=='ow.ly') { echo 'selected="selected"'; } ?>>Ow.ly</option>
@@ -372,6 +379,36 @@ function tweetable_write_settingsmenu() {
 	</select>
 	<br />Specify which URL shortener should be used by Tweetable.
 	</td></tr>
+	
+	<tr valign="top" id="shortener_login">
+	<th scope="row"><label for="shortener_login">Shortener Login</label></th>
+	<td>
+	<input type="text" name="shortener_login" class="regular-text" value="<?php echo $setting_shortener_login; ?>" /><br /><strong>Bit.ly</strong> requires that you enter your username here.
+	</td></tr>
+	
+	<tr valign="top" id="shortener_apikey">
+	<th scope="row"><label for="shortener_apikey">Shortener API Key</label></th>
+	<td>
+	<input type="text" name="shortener_apikey" class="regular-text" value="<?php echo $setting_shortener_apikey; ?>" /><br /><strong>Bit.ly</strong> requires that you enter your account's API key here. You can find it on your <a href="http://bit.ly/account/">account</a> page.
+	</td></tr>
+	
+	<script type="text/javascript">
+	var selectmenu=document.getElementById('url_shortener');
+	if (selectmenu.options[selectmenu.selectedIndex].value != 'bit.ly') {
+		document.getElementById('shortener_login').style.display = 'none';
+		document.getElementById('shortener_apikey').style.display = 'none';
+	}
+	selectmenu.onchange=function() {
+		var theoption=this.options[this.selectedIndex];
+		if (theoption.value == 'bit.ly'){
+			document.getElementById('shortener_login').style.display = 'table-row';
+			document.getElementById('shortener_apikey').style.display = 'table-row';	
+		} else {
+			document.getElementById('shortener_login').style.display = 'none';
+			document.getElementById('shortener_apikey').style.display = 'none';
+		}
+	}
+	</script>
 	
 	<tr valign="top">
 	<th scope="row">Tweetmeme Button</th>

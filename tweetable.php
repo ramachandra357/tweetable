@@ -268,6 +268,8 @@ function tweetable_publish_tweet($post_id) {
 		$user_key_secret = get_option('tweetable_access_token_secret');
 		$twitter = new Twitter_API(get_option('tweetable_app_key'), get_option('tweetable_app_key_secret'));
 		$shortener = get_option('tweetable_url_shortener');
+		$shortener_login = get_option('tweetable_shortener_login');
+		$shortener_apikey = get_option('tweetable_shortener_apikey');
 		$tweet_prefix = get_option('tweetable_auto_tweet_prefix');
 		$googletags = get_option('tweetable_google_campaign_tags');
 		
@@ -278,7 +280,7 @@ function tweetable_publish_tweet($post_id) {
 		}
 		
 		$permalink = apply_filters('tweetable_autotweet_permalink', $permalink);
-		$permalink = $twitter->shorten_url($permalink, $shortener);
+		$permalink = $twitter->shorten_url($permalink, $shortener, $shortener_apikey, $shortener_login);
 		$title = $tweet_prefix.' '.$post->post_title;
 		$title = apply_filters('tweetable_autotweet_title', $title);
 		

@@ -43,7 +43,9 @@ if(!empty($_POST)) {
 		case 'shorten-url':
 			$theurl = rawurlencode($_POST['theurl']);
 			$shortener = get_option('tweetable_url_shortener');
-			$shorturl = $twitter->shorten_url($theurl, $shortener);
+			$shortener_login = get_option('tweetable_shortener_login');
+			$shortener_apikey = get_option('tweetable_shortener_apikey');
+			$shorturl = $twitter->shorten_url($theurl, $shortener, $shortener_apikey, $shortener_login);
 			echo $shorturl;
 		break;
 		
