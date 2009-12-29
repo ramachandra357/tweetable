@@ -2,11 +2,14 @@
 
 /*
 File Name: PHP Twitter API Class
-Author: Matt Harzewski (redwall_hp)Author URL: http://www.webmaster-source.com
+Author: Matt Harzewski (redwall_hp)
+Author URL: http://www.webmaster-source.com
 License: LGPL
 */
 
-require_once('OAuth/twitterOAuth.php');
+if ( !class_exists('TwitterOAuth') ) {
+	require_once('OAuth/twitterOAuth.php');
+}
 
 class Twitter_API {
 
