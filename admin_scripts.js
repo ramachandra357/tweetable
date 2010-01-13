@@ -60,7 +60,13 @@ jQuery(document).ready(function() {
 		do_action = jQuery('#do_action').val();
 		token = jQuery('#js_token').val();
 		post_to = jQuery('#post_to').val();
-		datastring = 'tweet=' + tweet + '&in_reply_to_status=' + in_reply_to_status + '&do=' + do_action + '&token=' + token;
+		//datastring = 'tweet=' + tweet + '&in_reply_to_status=' + in_reply_to_status + '&do=' + do_action + '&token=' + token;
+		datastring = {
+			'tweet' : tweet,
+			'in_reply_to_status' : in_reply_to_status,
+			'do' : do_action,
+			'token' : token
+		}
 		jQuery.ajax({
 			type: "POST",
 			url: post_to,
