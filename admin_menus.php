@@ -376,6 +376,7 @@ function tweetable_write_settingsmenu() {
 	<option value="ow.ly" <?php if ($setting_url_shortener=='ow.ly') { echo 'selected="selected"'; } ?>>Ow.ly</option>
 	<option value="3.ly" <?php if ($setting_url_shortener=='3.ly') { echo 'selected="selected"'; } ?>>3.ly</option>
 	<option value="tinyurl" <?php if ($setting_url_shortener=='tinyurl') { echo 'selected="selected"'; } ?>>TinyURL.com</option>
+	<option value="yourls" <?php if ($setting_url_shortener=='yourls') { echo 'selected="selected"'; } ?>>YOURLS</option>
 	</select>
 	<br />Specify which URL shortener should be used by Tweetable.
 	</td></tr>
@@ -383,24 +384,31 @@ function tweetable_write_settingsmenu() {
 	<tr valign="top" id="shortener_login">
 	<th scope="row"><label for="shortener_login">Shortener Login</label></th>
 	<td>
-	<input type="text" name="shortener_login" class="regular-text" value="<?php echo $setting_shortener_login; ?>" /><br /><strong>Bit.ly</strong> requires that you enter your username here.
+	<input type="text" name="shortener_login" class="regular-text" value="<?php echo $setting_shortener_login; ?>" />
+	<br /><strong>Bit.ly</strong> requires that you enter your username here. <strong>YOURLS</strong> requires that you enter your username and the domain/path of the install, in the form of <em>username@example.org</em>
 	</td></tr>
 	
 	<tr valign="top" id="shortener_apikey">
 	<th scope="row"><label for="shortener_apikey">Shortener API Key</label></th>
 	<td>
-	<input type="text" name="shortener_apikey" class="regular-text" value="<?php echo $setting_shortener_apikey; ?>" /><br /><strong>Bit.ly</strong> requires that you enter your account's API key here. You can find it on your <a href="http://bit.ly/account/">account</a> page.
+	<input type="password" name="shortener_apikey" class="regular-text" value="<?php echo $setting_shortener_apikey; ?>" />
+	<br /><strong>Bit.ly</strong> requires that you enter your account's API key here. You can find it on your <a href="http://bit.ly/account/">account</a> page. <strong>YOURLS</strong> requires that you enter your account password.
 	</td></tr>
 	
 	<script type="text/javascript">
 	var selectmenu=document.getElementById('url_shortener');
-	if (selectmenu.options[selectmenu.selectedIndex].value != 'bit.ly') {
+	var selectvalue=selectmenu.options[selectmenu.selectedIndex].value;
+	if (selectvalue != 'bit.ly' && selectvalue != 'yourls') {
 		document.getElementById('shortener_login').style.display = 'none';
 		document.getElementById('shortener_apikey').style.display = 'none';
 	}
 	selectmenu.onchange=function() {
 		var theoption=this.options[this.selectedIndex];
-		if (theoption.value == 'bit.ly'){
+		if (theoption.value == 'bit.ly') {
+			document.getElementById('shortener_login').style.display = 'table-row';
+			document.getElementById('shortener_apikey').style.display = 'table-row';	
+		}
+		else if (theoption.value == 'yourls') {
 			document.getElementById('shortener_login').style.display = 'table-row';
 			document.getElementById('shortener_apikey').style.display = 'table-row';	
 		} else {

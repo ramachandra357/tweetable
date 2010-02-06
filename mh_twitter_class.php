@@ -412,6 +412,11 @@ public function shorten_url($the_url, $shortener='is.gd', $api_key='', $user='')
 	} elseif ($shortener=="tinyurl") {
 		$url = "http://tinyurl.com/api-create.php?url={$the_url}";
 		$response = $this->send_request($url, 'GET');
+	} elseif ($shortener=="yourls" && isset($api_key) && isset($user)) {
+		//Pass a string in the form of "user@domain.com" as the username, and the password as the API key
+		$yourls = explode('@', $user);
+		$url = "http://{$yourls[1]}/yourls-api.php?username={$yourls[0]}&password={$api_key}&format=simple&action=shorturl&url={$the_url}";
+		$response = $this->send_request($url, 'GET');
 	} else {
 		$url = "http://is.gd/api.php?longurl={$the_url}";
 		$response = $this->send_request($url, 'GET');
