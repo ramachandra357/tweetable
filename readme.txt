@@ -6,7 +6,7 @@ Donate link: http://www.webmaster-source.com/donate/
 Tags: twitter, tweet, tweetable, wordpress, plugin
 Requires at least: 2.7
 Tested up to: 2.9.1
-Stable tag: 1.1.7
+Stable tag: 1.1.8
 
 Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc. Uses OAuth for user authentication, so your Twitter password is not stored in plain text.
 
@@ -51,6 +51,11 @@ OAuth (http://oauth.net/) is a standard used by sites like Twitter to allow thir
 = What is the bookmarklet on the "Tweet" page? =
 If you drag it into your browser's bookmarks toolbar, you can tweet a link to a web page just by clicking it. (You will have to log into your blog admin, of course.)
 
+= How do I enable YOURLS support? What does it do? =
+YOURLS (http://yourls.org), or "Your Own URL Shortener" is a PHP application by Lester "Gamerz" Chan and Ozh Richard. If you have a short domain name handy, you can quickly set up your own URL shortener, complete with an API that Tweetable can hook into.
+
+In order to let Tweetable create new short URLs using your YOURLS install, you need to configure a few settings on the Twitter->Settings page in WordPress. First you must input your YOURLS username and the domain where it is installed into the "Shortener Login" field. An example would be `you@example.org`. The `@` symbol is used as a separator between the domain name and the username. If YOURLS is installed in a subdirectory of a domain, you may have to use something along the lines of `you@example.org/directory`. The second step is to put the YOURLS password in the "Shortener API Key" field.
+
 = Who made the icons used in Tweetable? =
 The icons used throughout Tweetable are part of the Silk Icons set by FamFamFam. http://www.famfamfam.com/lab/icons/silk/
 
@@ -93,6 +98,10 @@ Runs immediately before the auto-tweet is sent, after the title and link are com
 
 
 == Changelog ==
+
+= Version 1.1.8 =
+* Added support for the YOURLS shortener.
+* Changed the shortener API key field (on the settings page) from a "text" to a "password" input.
 
 = Version 1.1.7 =
 Tweets with "&" symbols are no longer cut off.
