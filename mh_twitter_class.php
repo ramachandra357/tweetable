@@ -404,7 +404,7 @@ public function shorten_url($the_url, $shortener='is.gd', $api_key='', $user='')
 		$url = "http://api.tr.im/api/trim_simple?url={$the_url}";
 		$response = $this->send_request($url, 'GET');
 	} elseif ($shortener=="3.ly") {
-		$url = "http://3.ly/?api=em5893833&u={$the_url}";
+		$url = "http://3.ly/?api=mh4829510392&u={$the_url}";
 		$response = $this->send_request($url, 'GET');
 	} elseif ($shortener=="ow.ly") {
 		$url = "http://www.pluginspark.com/hosted/shorten_url.php?shortener=ow.ly&url={$the_url}";
