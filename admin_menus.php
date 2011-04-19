@@ -371,6 +371,7 @@ function tweetable_write_settingsmenu() {
 	<select name="url_shortener" id="url_shortener">
 	<option value="is.gd" <?php if ($setting_url_shortener=='is.gd') { echo 'selected="selected"'; } ?>>Is.gd</option>
 	<option value="bit.ly" <?php if ($setting_url_shortener=='bit.ly') { echo 'selected="selected"'; } ?>>Bit.ly</option>
+	<option value="j.mp" <?php if ($setting_url_shortener=='j.mp') { echo 'selected="selected"'; } ?>>J.mp</option>
 	<option value="tr.im" <?php if ($setting_url_shortener=='tr.im') { echo 'selected="selected"'; } ?>>Tr.im</option>
 	<option value="su.pr" <?php if ($setting_url_shortener=='su.pr') { echo 'selected="selected"'; } ?>>Su.pr</option>
 	<option value="ow.ly" <?php if ($setting_url_shortener=='ow.ly') { echo 'selected="selected"'; } ?>>Ow.ly</option>
@@ -385,7 +386,7 @@ function tweetable_write_settingsmenu() {
 	<th scope="row"><label for="shortener_login">Shortener Login</label></th>
 	<td>
 	<input type="text" name="shortener_login" class="regular-text" value="<?php echo $setting_shortener_login; ?>" />
-	<br /><strong>Bit.ly</strong> requires that you enter your username here. <strong>YOURLS</strong> requires that you enter your username and the domain/path of the install, in the form of <em>username@example.org</em>
+	<br /><strong>Bit.ly</strong> and <strong>J.mp</strong> require that you enter your username here. <strong>YOURLS</strong> requires that you enter your username and the domain/path of the install, in the form of <em>username@example.org</em>
 	</td></tr>
 	
 	<tr valign="top" id="shortener_apikey">
@@ -398,13 +399,13 @@ function tweetable_write_settingsmenu() {
 	<script type="text/javascript">
 	var selectmenu=document.getElementById('url_shortener');
 	var selectvalue=selectmenu.options[selectmenu.selectedIndex].value;
-	if (selectvalue != 'bit.ly' && selectvalue != 'yourls') {
+	if (selectvalue != 'bit.ly' && selectvalue != 'j.mp' && selectvalue != 'yourls') {
 		document.getElementById('shortener_login').style.display = 'none';
 		document.getElementById('shortener_apikey').style.display = 'none';
 	}
 	selectmenu.onchange=function() {
 		var theoption=this.options[this.selectedIndex];
-		if (theoption.value == 'bit.ly') {
+		if (theoption.value == 'bit.ly' || theoption.value == 'j.mp') {
 			document.getElementById('shortener_login').style.display = 'table-row';
 			document.getElementById('shortener_apikey').style.display = 'table-row';	
 		}

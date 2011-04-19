@@ -388,15 +388,24 @@ public function oauth_request($url, $method, $user_access_key, $user_access_secr
 //Shorten long URLs with is.gd or bit.ly.
 public function shorten_url($the_url, $shortener='is.gd', $api_key='', $user='') {
 
-	if ($shortener=="bit.ly" && isset($api_key) && isset($user)) {
-		$url = "http://api.bit.ly/shorten?version=2.0.1&longUrl={$the_url}&login={$user}&apiKey={$api_key}&format=xml";
+	if (($shortener=="bit.ly" || $shortener=="j.mp") && isset($api_key) && isset($user)) {
+		$url = "http://api.bitly.com/v3/shorten?longUrl={$the_url}&domain={$shortener}&login={$user}&apiKey={$api_key}&format=xml";
 		$response = $this->send_request($url, 'GET');
 		$the_results = new SimpleXmlElement($response);
-		if ($the_results->errorCode == '0') {
-			$response = $the_results->results->nodeKeyVal->shortUrl;
+
+    $fp = fopen('/tmp/debug.txt', 'w');
+    fwrite($fp, "$url\n");
+    fwrite($fp, var_export($the_results, true) . "\n");
+    fwrite($fp, $the_results->status_code . "\n");
+
+		if ($the_results->status_code == '200') {
+			$response = $the_results->data->url;
 		} else {
 			$response = "";
 		}
+
+    fwrite($fp, "[$response]\n");
+    fclose($fp);
 	} elseif ($shortener=="su.pr") {
 		$url = "http://su.pr/api/simpleshorten?url={$the_url}";
 		$response = $this->send_request($url, 'GET');
