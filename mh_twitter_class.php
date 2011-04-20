@@ -393,19 +393,12 @@ public function shorten_url($the_url, $shortener='is.gd', $api_key='', $user='')
 		$response = $this->send_request($url, 'GET');
 		$the_results = new SimpleXmlElement($response);
 
-    $fp = fopen('/tmp/debug.txt', 'w');
-    fwrite($fp, "$url\n");
-    fwrite($fp, var_export($the_results, true) . "\n");
-    fwrite($fp, $the_results->status_code . "\n");
-
 		if ($the_results->status_code == '200') {
 			$response = $the_results->data->url;
 		} else {
 			$response = "";
 		}
 
-    fwrite($fp, "[$response]\n");
-    fclose($fp);
 	} elseif ($shortener=="su.pr") {
 		$url = "http://su.pr/api/simpleshorten?url={$the_url}";
 		$response = $this->send_request($url, 'GET');
