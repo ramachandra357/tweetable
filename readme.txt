@@ -4,9 +4,9 @@ Plugin URI: http://www.webmaster-source.com/tweetable-twitter-plugin-wordpress/
 Author URI: http://www.webmaster-source.com
 Donate link: http://www.webmaster-source.com/donate/
 Tags: twitter, tweet, tweetable, wordpress, plugin
-Requires at least: 2.7
-Tested up to: 3.1.1
-Stable tag: 1.2.0
+Requires at least: 2.8
+Tested up to: 3.2.1
+Stable tag: 1.2.1
 
 Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc. Uses OAuth for user authentication, so your Twitter password is not stored in plain text.
 
@@ -98,6 +98,9 @@ Runs immediately before the auto-tweet is sent, after the title and link are com
 
 
 == Changelog ==
+
+= Version 1.2.1 =
+* Made a minor change to the widget-handling code to replace a couple of deprecated functions with their new counterparts.
 
 = Version 1.2.0 =
 * Removed some debugging code. If you are running 1.1.9, please update.
