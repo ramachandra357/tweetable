@@ -134,7 +134,7 @@ function tweetable_create_widget() {
 }
 
 
-function tweetable_write_widget($args, $params) {
+function tweetable_write_widget($args) {
 
 	extract($args);
 	$options = get_option('tweetable_widget_options');
