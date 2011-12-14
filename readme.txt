@@ -5,8 +5,8 @@ Author URI: http://www.webmaster-source.com
 Donate link: http://www.webmaster-source.com/donate/
 Tags: twitter, tweet, tweetable, wordpress, plugin
 Requires at least: 2.8
-Tested up to: 3.2.1
-Stable tag: 1.2.2
+Tested up to: 3.3
+Stable tag: 1.2.3
 
 Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc. Uses OAuth for user authentication, so your Twitter password is not stored in plain text.
 
@@ -24,6 +24,7 @@ Tweetable is intended to help integrate Twitter into your blog. It can automatic
 * Set the minimum user level to access the Twitter page in the WordPress backend.
 * Automatically add a full-size or compact Tweetmeme widget to your posts.
 * Track tweets based on keywords of your choice via the Twitter API.
+* Embed tweets in your posts with oEmbed.
 
 Note: Please ensure that your server is running PHP 5 or higher before installing.
 
@@ -48,6 +49,9 @@ Generally, all you should have to do is click the Update button on the Plugins p
 = What the @!%$ is OAuth? =
 OAuth (http://oauth.net/) is a standard used by sites like Twitter to allow third-party scripts to request access to your account. It's much more secure than simply handing an application your Twitter username and password. Thanks to OAuth, nobody can steal your Twitter password if they managed to gain access to your WordPress database.
 
+= oEmbed? What's that? How do I use it? =
+[oEmbed](http://codex.wordpress.org/oEmbed) is a protocol that makes it easier to embed things in your blog posts, such as YouTube videos. If you have the "Auto-embeds" option turned on in your Media settings, then Tweetable will add Twitter oEmbed support. This means you can embed tweets in your blog posts, and they will be rendered in a fancy manner that looks consistant with Twitter.com. To embed a tweet, look for the "Embed this Tweet" link below a status update on Twitter.com. (For an example of where to find it, look [here](https://twitter.com/#!/redwall_hp/statuses/146744631483318273).) Click it and copy the plain Link it gives you. Paste the link on it's own line in your post, and it will be replaced by the entire tweet when you view the published post.
+
 = What is the bookmarklet on the "Tweet" page? =
 If you drag it into your browser's bookmarks toolbar, you can tweet a link to a web page just by clicking it. (You will have to log into your blog admin, of course.)
 
@@ -60,7 +64,7 @@ In order to let Tweetable create new short URLs using your YOURLS install, you n
 The icons used throughout Tweetable are part of the Silk Icons set by FamFamFam. http://www.famfamfam.com/lab/icons/silk/
 
 = How do I contact the plugin author? =
-If you have a bug report, a feature request, or some other issue, please use the contact form found here to contact me: http://www.webmaster-source.com/about/
+If you have a bug report, a feature request, or some other issue, please use the WordPress support forum here: http://wordpress.org/extend/plugins/tweetable/
 
 
 
@@ -98,6 +102,9 @@ Runs immediately before the auto-tweet is sent, after the title and link are com
 
 
 == Changelog ==
+
+= Version 1.2.3 =
+* Added oEmbed support for Twitter! Now if you paste a properly-formed URL into a post, it will be replaced with an awesome widget from Twitter.
 
 = Version 1.2.2 =
 * Fixed "Missing Argument 2" warning.
