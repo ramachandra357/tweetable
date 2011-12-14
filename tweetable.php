@@ -24,6 +24,7 @@ if (version_compare(PHP_VERSION, '5.0.0', '<')) {
 
 /*** Includes ***/
 include 'mh_twitter_class.php';
+include 'tweet_embeds.php';
 
 
 
@@ -451,7 +452,7 @@ function tweetable_add_plugin_links($links, $file) {
 
 
 /*
-Copyright 2008 Matt Harzewski
+Copyright 2008-2011 Matt Harzewski
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -30,3 +30,8 @@
 	font-style: italic;
 	color: #9a9898;
 }
+
+.twp-container {
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
