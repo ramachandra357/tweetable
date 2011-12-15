@@ -98,6 +98,7 @@ Runs immediately before the auto-tweet is sent, after the title and link are com
 2. Tweetable settings
 3. The Track screen in the WordPress admin
 4. The Twitter Dashboard widget
+5. Embedding tweets in blog posts with oEmbed
 
 
 
