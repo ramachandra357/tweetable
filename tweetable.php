@@ -5,7 +5,7 @@ Plugin URI: http://www.webmaster-source.com/tweetable-twitter-plugin-wordpress/
 Description: Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc.
 Author: Matt Harzewski (redwall_hp)
 Author URI: http://www.webmaster-source.com
-Version: 1.2.4
+Version: 1.2.5
 */
 
 
@@ -58,9 +58,9 @@ function tweetable_latest_tweets($num=3) {
 	echo '<ol class="tweetable_latest_tweets">';
 	for ( $counter=0; $counter <= ($num-1); $counter += 1 ) {
 		echo '<li class="tweetable_item">';
-		$date = date('F j, Y g:i', strtotime($latest['tweets'][$counter]['created_at']));
+		$date = strftime('%A, %m.%d.%y %H:%M', strtotime($latest['tweets'][$counter]['created_at']));
 		echo '<span class="twitter_status">';
-		echo '<span class="status-text">'.make_clickable($latest['tweets'][$counter]['text']).'</span>';
+		echo '<span class="status-text">'.make_clickable(tweetable_make_clickable($latest['tweets'][$counter]['text'])).'</span>';
 		echo '<span class="twitter_meta">'.$date.'</span>';
 		echo '</span>';
 		echo '</li>';
@@ -70,6 +70,12 @@ function tweetable_latest_tweets($num=3) {
 
 }
 
+function tweetable_make_clickable($str) {
+	$str = preg_replace('/\#([a-z0-9]+)/i', '<a href="http://search.twitter.com/search?q=%23$1">#$1</a>', $str);
+	$str = preg_replace('/@([a-z0-9_]+)/i', '<a href="http://twitter.com/$1">@$1</a>', $str);
+
+	return $str;
+}
 
 //Get the follower count of the Tweetable user. Pass FALSE to return instead of echo.
 function tweetable_follower_count($output=TRUE) {
@@ -168,9 +174,9 @@ function tweetable_write_widget($args) {
 	$counter = 0;
 	foreach ( $latest['tweets'] as $tweet ) {
 		echo '<li class="tweetable_item">';
-		$date = date('F j, Y g:i', strtotime($tweet['created_at']));
+		$date = strftime('%A, %m.%d.%y %H:%M', strtotime($tweet['created_at']));
 		echo '<span class="twitter_status">';
-		echo '<span class="status-text">'.make_clickable($tweet['text']).'</span>';
+		echo '<span class="status-text">'.make_clickable(tweetable_make_clickable($tweet['text'])).'</span>';
 		echo '<span class="twitter_meta">'.$date.'</span>';
 		echo '</span>';
 		echo '</li>';
