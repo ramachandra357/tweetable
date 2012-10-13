@@ -66,7 +66,7 @@ if ($stage == '1') {
 	<li>Put a brief description of your blog in the <strong>Description</strong> box. Just a few words to identify the application.</li>
 	<li>Your blog's URL should go in the <strong>Application Website</strong> field. (E.g. <em>http://www.webmaster-source.com.</em>)</li>
 	<li>Leave the <strong>Application Type</strong> as <strong>Browser.</strong></li>
-	<li>In the <strong>Callback URL</strong> field, paste <strong><code>http://<?php echo htmlentities($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']); ?>&amp;oauth=1</code></strong></li>
+	<li>In the <strong>Callback URL</strong> field, paste <strong><code><?php echo $next_step; ?>&amp;step=5&amp;oauth=1</code></strong></li>
 	<li>Set <strong>Default Access type</strong> as <strong>Read &amp; Write.</strong></li>
 	<li>Press the <strong>Save</strong> button, then come back here and continue the setup wizard.</li>
 	</ol>
@@ -147,6 +147,7 @@ if ($stage == '5') {
 	$request_link = get_option('tweetable_request_oauth');
 	$twitter = new Twitter_API(get_option('tweetable_app_key'), get_option('tweetable_app_key_secret'));
 	$tokens = $twitter->oauth_get_user_token($request_link['request_token'], $request_link['request_token_secret']);
+	echo 'Tokens: <pre>'; print_r($tokens); echo '</pre>';
 	$access_token = $tokens['access_token'];
 	$access_token_secret = $tokens['access_token_secret'];
 	update_option('tweetable_access_token', $access_token);

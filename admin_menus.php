@@ -125,7 +125,7 @@ function tweetable_write_twittermenu() {
 	tweetable_admin_page_header();	
 	$user_name = get_option('tweetable_twitter_user');
 	$user_key = get_option('tweetable_access_token');
-	$rate_limit = tweetable_api_rate_status();
+	//$rate_limit = tweetable_api_rate_status();
 	if ($_GET['ntweet']) {
 		$tweet_val = $_GET['ntweet'];
 	}
@@ -146,7 +146,7 @@ function tweetable_write_twittermenu() {
 	<input type="hidden" name="post_to" id="post_to" value="<?php echo tweetable_get_plugin_dir('url'); ?>/form_post.php" />
 	<div id="my-latest-status">
 	<?php
-	$latest = tweetable_fetch_latest_tweet($rate_limit);
+	$latest = tweetable_fetch_latest_tweet();
 	$date = date('F j, Y g:i', strtotime($latest['tweet']['created_at']));
 	echo '<strong>Latest: </strong>'.$latest['tweet']['text'].' <em>'.$date.'</em>';
 	?>
@@ -157,7 +157,7 @@ function tweetable_write_twittermenu() {
 	</div>
 	
 	<div class="twitter_timeline">
-	<?php tweetable_menu_twitter_timeline($rate_limit); ?>
+	<?php tweetable_menu_twitter_timeline(); ?>
 	</div>
 	
 	<div style="margin-top:35px; margin-bottom:35px;">
@@ -165,7 +165,7 @@ function tweetable_write_twittermenu() {
 	</div>
 	
 	<?php
-	echo '<p class="api-rate">Hourly API requests left: '.$rate_limit['remaining'].'/'.$rate_limit['limit'].'.</p>';
+	//echo '<p class="api-rate">Hourly API requests left: '.$rate_limit['remaining'].'/'.$rate_limit['limit'].'.</p>';
 	tweetable_admin_page_footer();
 	
 }
@@ -236,7 +236,7 @@ function tweetable_write_trackmenu() {
 	<input type="hidden" name="post_to" id="post_to" value="<?php echo tweetable_get_plugin_dir('url'); ?>/form_post.php" />
 	<div id="my-latest-status">
 	<?php
-	$latest = tweetable_fetch_latest_tweet($rate_limit);
+	$latest = tweetable_fetch_latest_tweet();
 	$date = date('F j, Y g:i', strtotime($latest['tweet']['created_at']));
 	echo '<strong>Latest: </strong>'.$latest['tweet']['text'].' <em>'.$date.'</em>';
 	?>
@@ -467,7 +467,7 @@ function tweetable_write_settingsmenu() {
 
 
 /*** Twitter Menu Timeline ***/
-function tweetable_menu_twitter_timeline($rate_limit) {
+function tweetable_menu_twitter_timeline() {
 
 	$user_key = get_option('tweetable_access_token');
 	$user_key_secret = get_option('tweetable_access_token_secret');
@@ -476,38 +476,38 @@ function tweetable_menu_twitter_timeline($rate_limit) {
 	$friend_tweets = get_option('tweetable_menu_timeline');
 	
 	if ( $friend_tweets['cache_time'] < (mktime() - 120) ) {
-		if ($rate_limit['remaining'] > 4) {
+		/*if ($rate_limit['remaining'] > 4) {*/
 			$friend_tweets_get = $twitter->friends_timeline($user_key, $user_key_secret, '50');
 			//echo '<pre>'; print_r($friend_tweets_get); echo '</pre>';
 			$count = 0;
-			foreach ($friend_tweets_get->status as $tweet) {
-				$friend_tweets_new[$count]['created_at'] = (string)$tweet->created_at;
-				$friend_tweets_new[$count]['id'] = (string)$tweet->id;
+			foreach ($friend_tweets_get as $tweet) {
+				$friend_tweets_new[$count]['created_at'] = (string)$tweet['created_at'];
+				$friend_tweets_new[$count]['id'] = (string)$tweet['id'];
 				//$friend_tweets_new[$count]['text'] = (string)$tweet->text;
-				$friend_tweets_new[$count]['text'] = preg_replace('/\#([a-zA-Z0-9_]+)/', '<a href="'.tweetable_get_plugin_dir('url').'/dialog.php?show=hashtag&hashtag=\\1&KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox hashtag" title="Hashtag Search">#\\1</a>', (string)$tweet->text);
-				$friend_tweets_new[$count]['source'] = (string)$tweet->source;
-				$friend_tweets_new[$count]['in_reply_to_status_id'] = (string)$tweet->in_reply_to_status_id;
-				$friend_tweets_new[$count]['in_reply_to_user_id'] = (string)$tweet->in_reply_to_user_id;
-				$friend_tweets_new[$count]['favorited'] = (string)$tweet->favorited;
-				$friend_tweets_new[$count]['in_reply_to_screen_name'] = (string)$tweet->in_reply_to_screen_name;
-				$friend_tweets_new[$count]['user']['id'] = (string)$tweet->user->id;
-				$friend_tweets_new[$count]['user']['name'] = (string)$tweet->user->name;
-				$friend_tweets_new[$count]['user']['screen_name'] = (string)$tweet->user->screen_name;
-				$friend_tweets_new[$count]['user']['profile_image_url'] = (string)$tweet->user->profile_image_url;
-				$friend_tweets_new[$count]['user']['url'] = (string)$tweet->user->url;
-				$friend_tweets_new[$count]['user']['followers_count'] = (string)$tweet->user->followers_count;
-				$friend_tweets_new[$count]['user']['friends_count'] = (string)$tweet->user->friends_count;
-				$friend_tweets_new[$count]['user']['created_at'] = (string)$tweet->user->created_at;
+				$friend_tweets_new[$count]['text'] = preg_replace('/\#([a-zA-Z0-9_]+)/', '<a href="'.tweetable_get_plugin_dir('url').'/dialog.php?show=hashtag&hashtag=\\1&KeepThis=true&amp;TB_iframe=true&amp;height=450&amp;width=680" class="thickbox hashtag" title="Hashtag Search">#\\1</a>', (string)$tweet['text']);
+				$friend_tweets_new[$count]['source'] = (string)$tweet['source'];
+				$friend_tweets_new[$count]['in_reply_to_status_id'] = (string)$tweet['in_reply_to_status_id'];
+				$friend_tweets_new[$count]['in_reply_to_user_id'] = (string)$tweet['in_reply_to_user_id'];
+				$friend_tweets_new[$count]['favorited'] = (string)$tweet['favorited'];
+				$friend_tweets_new[$count]['in_reply_to_screen_name'] = (string)$tweet['in_reply_to_screen_name'];
+				$friend_tweets_new[$count]['user']['id'] = (string)$tweet['user']['id'];
+				$friend_tweets_new[$count]['user']['name'] = (string)$tweet['user']['name'];
+				$friend_tweets_new[$count]['user']['screen_name'] = (string)$tweet['user']['screen_name'];
+				$friend_tweets_new[$count]['user']['profile_image_url'] = (string)$tweet['user']['profile_image_url'];
+				$friend_tweets_new[$count]['user']['url'] = (string)$tweet['user']['url'];
+				$friend_tweets_new[$count]['user']['followers_count'] = (string)$tweet['user']['followers_count'];
+				$friend_tweets_new[$count]['user']['friends_count'] = (string)$tweet['user']['friends_count'];
+				$friend_tweets_new[$count]['user']['created_at'] = (string)$tweet['user']['created_at'];
 				$count++;
 			}
 			$friend_tweets = array( 'tweets' => $friend_tweets_new, 'cache_time' => mktime() );
 			update_option('tweetable_menu_timeline', $friend_tweets);
-		}
+		/*}*/
 	}
 	
-	if ($rate_limit['remaining'] < 6) {
+	/*if ($rate_limit['remaining'] < 6) {
 		echo '<div style="width:650px"><strong>Warning:</strong> Your Twitter account has made more than 95 requests to the Twitter API in this hour. To prevent you from running out of requests, the latest tweets have not been fetched.</div>';
-	}
+	}*/
 	
 	echo '<ol id="tweetable-timeline">';
 	

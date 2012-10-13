@@ -5,7 +5,7 @@ Plugin URI: http://www.webmaster-source.com/tweetable-twitter-plugin-wordpress/
 Description: Integrate Twitter with your WordPress blog. Automatically tweet new posts, display your latest tweet in your sidebar, etc.
 Author: Matt Harzewski (redwall_hp)
 Author URI: http://www.webmaster-source.com
-Version: 1.2.5
+Version: 1.2.6
 */
 
 
@@ -15,7 +15,7 @@ global $wp_version;
 if (version_compare($wp_version, '2.7', '<')) {
 	exit("Tweetable requires WordPress 2.7 or greater.");
 }
-if (version_compare(PHP_VERSION, '5.0.0', '<')) {
+if (version_compare(PHP_VERSION, '5.1.2', '<')) {
 	exit("Tweetable requires PHP 5 or greater.");
 }
 	
@@ -360,9 +360,9 @@ function tweetable_fetch_latest_tweet($rate_limit='check') {
 	$latest_tweet = get_option('tweetable_latest_tweet');
 	
 	if ( $latest_tweet['cache_time'] < (mktime() - 120) ) {
-		if ($rate_limit == 'check') {
+		/*if ($rate_limit == 'check') {
 			$rate_limit = tweetable_api_rate_status();
-		}
+		}*/
 		if ($rate_limit['remaining'] > 4) {
 			$latest = $twitter->latest_tweet($twitter_user, $user_key, $user_key_secret);
 			$latest_tweet_new['created_at'] = (string)$latest->created_at;
@@ -402,31 +402,31 @@ function tweetable_get_recent_tweets($rate_limit='check') {
 	$latest_tweets = get_option('tweetable_recent_tweets_cache');
 	
 	if ( $latest_tweets['cache_time'] < (mktime() - 120) ) {
-		if ($rate_limit == 'check') {
+		/*if ($rate_limit == 'check') {
 			$rate_limit = tweetable_api_rate_status();
-		}
-		if ($rate_limit['remaining'] > 4) {
+		}*/
+		/*if ($rate_limit['remaining'] > 4) {*/
 			$latest_tweets_get = $twitter->user_timeline($twitter_user, $user_key, $user_key_secret);
 			//print_r($latest_tweets_get);
 			$count = 0;
 			if (!isset($latest_tweets_get->tw_error)) {
-				foreach ($latest_tweets_get->status as $tweet) {
-					$latest_tweets_new[$count]['created_at'] = (string)$tweet->created_at;
-					$latest_tweets_new[$count]['id'] = (string)$tweet->id;
-					$latest_tweets_new[$count]['text'] = (string)$tweet->text;
-					$latest_tweets_new[$count]['source'] = (string)$tweet->source;
-					$latest_tweets_new[$count]['in_reply_to_status_id'] = (string)$tweet->in_reply_to_status_id;
-					$latest_tweets_new[$count]['in_reply_to_user_id'] = (string)$tweet->in_reply_to_user_id;
-					$latest_tweets_new[$count]['favorited'] = (string)$tweet->favorited;
-					$latest_tweets_new[$count]['in_reply_to_screen_name'] = (string)$tweet->in_reply_to_screen_name;
-					$latest_tweets_new[$count]['user']['id'] = (string)$tweet->user->id;
-					$latest_tweets_new[$count]['user']['name'] = (string)$tweet->user->name;
-					$latest_tweets_new[$count]['user']['screen_name'] = (string)$tweet->user->screen_name;
-					$latest_tweets_new[$count]['user']['profile_image_url'] = (string)$tweet->user->profile_image_url;
-					$latest_tweets_new[$count]['user']['url'] = (string)$tweet->user->url;
-					$latest_tweets_new[$count]['user']['followers_count'] = (string)$tweet->user->followers_count;
-					$latest_tweets_new[$count]['user']['friends_count'] = (string)$tweet->user->friends_count;
-					$latest_tweets_new[$count]['user']['created_at'] = (string)$tweet->user->created_at;
+				foreach ($latest_tweets_get as $tweet) {
+					$latest_tweets_new[$count]['created_at'] = (string)$tweet['created_at'];
+					$latest_tweets_new[$count]['id'] = (string)$tweet['id'];
+					$latest_tweets_new[$count]['text'] = (string)$tweet['text'];
+					$latest_tweets_new[$count]['source'] = (string)$tweet['source'];
+					$latest_tweets_new[$count]['in_reply_to_status_id'] = (string)$tweet['in_reply_to_status_id'];
+					$latest_tweets_new[$count]['in_reply_to_user_id'] = (string)$tweet['in_reply_to_user_id'];
+					$latest_tweets_new[$count]['favorited'] = (string)$tweet['favorited'];
+					$latest_tweets_new[$count]['in_reply_to_screen_name'] = (string)$tweet['in_reply_to_screen_name'];
+					$latest_tweets_new[$count]['user']['id'] = (string)$tweet['user']['id'];
+					$latest_tweets_new[$count]['user']['name'] = (string)$tweet['user']['name'];
+					$latest_tweets_new[$count]['user']['screen_name'] = (string)$tweet['user']['screen_name'];
+					$latest_tweets_new[$count]['user']['profile_image_url'] = (string)$tweet['user']['profile_image_url'];
+					$latest_tweets_new[$count]['user']['url'] = (string)$tweet['user']['url'];
+					$latest_tweets_new[$count]['user']['followers_count'] = (string)$tweet['user']['followers_count'];
+					$latest_tweets_new[$count]['user']['friends_count'] = (string)$tweet['user']['friends_count'];
+					$latest_tweets_new[$count]['user']['created_at'] = (string)$tweet['user']['created_at'];
 					$count++;
 				}
 			} else {
@@ -434,7 +434,7 @@ function tweetable_get_recent_tweets($rate_limit='check') {
 			}
 			$latest_tweets = array( 'tweets' => $latest_tweets_new, 'cache_time' => mktime() );
 			update_option('tweetable_recent_tweets_cache', $latest_tweets);
-		}
+		/*}*/
 	}
 	
 	return $latest_tweets;
@@ -458,7 +458,7 @@ function tweetable_add_plugin_links($links, $file) {
 
 
 /*
-Copyright 2008-2011 Matt Harzewski
+Copyright 2008-2012 Matt Harzewski
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -7,8 +7,9 @@ Author URL: http://www.webmaster-source.com
 License: LGPL
 */
 
-if ( !class_exists('TwitterOAuth') ) {
-	require_once('OAuth/twitterOAuth.php');
+if ( !class_exists('tmhOAuth') ) {
+	require 'OAuth/tmhOAuth.php';
+	require 'OAuth/tmhUtilities.php';
 }
 
 class Twitter_API {
@@ -33,17 +34,23 @@ function __construct($consumer_key='', $consumer_secret='') {
 //Get the 20 most recent tweets from a user.
 public function user_timeline($user, $auth_user='', $auth_pass='') {
 
-	$url = "http://twitter.com/statuses/user_timeline/{$user}.xml";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	try {
-		$xml = new SimpleXmlElement($response);
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/statuses/user_timeline'), array(
+		'include_rts' => '1',
+		'screen_name' => $user
+	));
+
+	if ($code == 200) {
+		$timeline = json_decode($tmhOAuth->response['response'], true);
 	}
-	catch (Exception $e) {
-		$xml = new stdClass;
-		$xml->status = array("0" => array("status" => ""));
-		$xml->tw_error = "<strong>Error:</strong> Could not load tweets.";
-	}
-	return $xml;
+
+	return $timeline;
 
 }
 
@@ -52,10 +59,8 @@ public function user_timeline($user, $auth_user='', $auth_pass='') {
 //Get the latest status update from a user.
 public function latest_tweet($user, $auth_user='', $auth_pass='') {
 
-	$url = "http://twitter.com/statuses/user_timeline/{$user}.xml";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	$xml = new SimpleXmlElement($response);
-	return $xml->status[0];
+	$timeline = $this->user_timeline($user, $auth_user, $auth_pass);
+	return $timeline[0];
 
 }
 
@@ -64,10 +69,20 @@ public function latest_tweet($user, $auth_user='', $auth_pass='') {
 //Get the recent activity of a users' friends. #Auth
 public function friends_timeline($auth_user, $auth_pass, $count='10') {
 
-	$url = "http://twitter.com/statuses/friends_timeline.xml?count={$count}";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	$xml = new SimpleXmlElement($response);
-	return $xml;
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/statuses/home_timeline'));
+
+	if ($code == 200) {
+		$timeline = json_decode($tmhOAuth->response['response'], true);
+	}
+
+	return $timeline;
 
 }
 
@@ -76,22 +91,20 @@ public function friends_timeline($auth_user, $auth_pass, $count='10') {
 //Get the newest replies/mentions of a user. #Auth
 public function mentions($auth_user, $auth_pass) {
 
-	$url = "http://twitter.com/statuses/mentions.xml";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	$xml = new SimpleXmlElement($response);
-	return $xml;
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
 
-}
+	$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/statuses/mentions_timeline'));
 
+	if ($code == 200) {
+		$timeline = json_decode($tmhOAuth->response['response'], true);
+	}
 
-
-//The 20 most recent tweets from the entire Twitterverse. Updates every 60 seconds. #NoLimit
-public function public_timeline($auth_user='', $auth_pass='') {
-
-	$url = "http://twitter.com/statuses/public_timeline.xml";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	$xml = new SimpleXmlElement($response);
-	return $xml;
+	return $timeline;
 
 }
 
@@ -100,10 +113,22 @@ public function public_timeline($auth_user='', $auth_pass='') {
 //Show a single status update by its ID.
 public function show_single($id, $auth_user='', $auth_pass='') {
 
-	$url = "http://twitter.com/statuses/show/{$id}.xml";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	$xml = new SimpleXmlElement($response);
-	return $xml;
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/statuses/show'), array(
+		'id' => $id
+	));
+
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
+	} else {
+		tmhUtilities::pr($tmhOAuth->response['response']);
+	}
 
 }
 
@@ -112,20 +137,23 @@ public function show_single($id, $auth_user='', $auth_pass='') {
 //Update a user's status. #Auth #NoLimit
 public function update_status($status, $auth_user, $auth_pass, $in_reply_to_status_id='') {
 
-	$url = "http://twitter.com/statuses/update.xml";
-	//$data = "status={$status}";
-	$data['status'] = $status;
-	if (isset($in_reply_to_status_id)) {
-		//$data = $data."&in_reply_to_status_id={$in_reply_to_status_id}";
-		$data['in_reply_to_status_id'] = $in_reply_to_status_id;
-	}
-	$response = $this->send_request($url, 'POST', $data, $auth_user, $auth_pass);
-	if ($response != 401) {
-		$xml = new SimpleXmlElement($response);
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('POST', $tmhOAuth->url('1.1/statuses/update'), array(
+		'status' => $status,
+		'in_reply_to_status_id' => $in_reply_to_status_id
+	));
+
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
 	} else {
-		$xml = "401 - Authentication Error";
+		tmhUtilities::pr($tmhOAuth->response['response']);
 	}
-	return $xml;
 
 }
 
@@ -134,15 +162,22 @@ public function update_status($status, $auth_user, $auth_pass, $in_reply_to_stat
 //Delete a status message (by ID). #Auth #NoLimit
 public function destroy_status($id, $auth_user, $auth_pass) {
 
-	$url = "http://twitter.com/statuses/destroy/{$id}.xml";
-	$data['id'] = $id;
-	$response = $this->send_request($url, 'POST', $data, $auth_user, $auth_pass);
-	if ($response != 401) {
-		$xml = new SimpleXmlElement($response);
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/statuses/destroy'), array(
+		'id' => $id
+	));
+
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
 	} else {
-		$xml = "401 - Authentication Error";
+		tmhUtilities::pr($tmhOAuth->response['response']);
 	}
-	return $xml;
 
 }
 
@@ -156,29 +191,22 @@ public function user_info($user, $auth_user='', $auth_pass='') {
 	$xml = new SimpleXmlElement($response);
 	return $xml;
 
-}
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
 
+	$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/users/show'), array(
+		'screen_name' => $user
+	));
 
-
-//Returns a user's friends.
-public function user_friends($user, $page, $auth_user='', $auth_pass='') {
-
-	$url = "http://twitter.com/statuses/friends.xml?screen_name={$user}&page={$page}";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	$xml = new SimpleXmlElement($response);
-	return $xml;
-
-}
-
-
-
-//Returns a user's followers. #Auth
-public function user_followers($user, $auth_user, $auth_pass, $page='') {
-
-	$url = "http://twitter.com/statuses/followers.xml?screen_name={$user}&page={$page}";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	$xml = new SimpleXmlElement($response);
-	return $xml;
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
+	} else {
+		tmhUtilities::pr($tmhOAuth->response['response']);
+	}
 
 }
 
@@ -187,16 +215,23 @@ public function user_followers($user, $auth_user, $auth_pass, $page='') {
 //Send a direct message. The recipient must be following you. #Auth #NoLimit
 public function send_direct_message($recipient, $message, $auth_user, $auth_pass) {
 
-	$url = "http://twitter.com/direct_messages/new.xml";
-	$data['text'] = $message;
-	$data['user'] = $recipient;
-	$response = $this->send_request($url, 'POST', $data, $auth_user, $auth_pass);
-	if ($response != 401) {
-		$xml = new SimpleXmlElement($response);
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('POST', $tmhOAuth->url('1.1/direct_messages/new'), array(
+		'text' => $message,
+		'user' => $recipient
+	));
+
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
 	} else {
-		$xml = "401 - Authentication Error";
+		tmhUtilities::pr($tmhOAuth->response['response']);
 	}
-	return $xml;
 
 }
 
@@ -205,14 +240,22 @@ public function send_direct_message($recipient, $message, $auth_user, $auth_pass
 //Follow a user. #Auth #NoLimit
 public function follow_user($user, $auth_user, $auth_pass) {
 
-	$url = "http://twitter.com/friendships/create/{$user}.xml?follow=true";
-	$response = $this->send_request($url, 'POST', '', $auth_user, $auth_pass);
-	if ($response != 401) {
-		$xml = new SimpleXmlElement($response);
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('POST', $tmhOAuth->url('1.1/friendships/create'), array(
+		'screen_name ' => $user
+	));
+
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
 	} else {
-		$xml = "401 - Authentication Error";
+		tmhUtilities::pr($tmhOAuth->response['response']);
 	}
-	return $xml;
 
 }
 
@@ -221,30 +264,22 @@ public function follow_user($user, $auth_user, $auth_pass) {
 //UnFollow a user. #Auth #NoLimit
 public function unfollow_user($user, $auth_user, $auth_pass) {
 
-	$url = "http://twitter.com/friendships/destroy/{$user}.xml";
-	$response = $this->send_request($url, 'POST', '', $auth_user, $auth_pass);
-	if ($response != 401) {
-		$xml = new SimpleXmlElement($response);
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('POST', $tmhOAuth->url('1.1/friendships/destroy'), array(
+		'screen_name ' => $user
+	));
+
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
 	} else {
-		$xml = "401 - Authentication Error";
+		tmhUtilities::pr($tmhOAuth->response['response']);
 	}
-	return $xml;
-
-}
-
-
-
-//Does a user follow another user? #Auth
-public function does_follow($user_a, $user_b, $auth_user, $auth_pass) {
-
-	$url = "http://twitter.com/friendships/exists.xml?user_a={$user_a}&user_b={$user_b}";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	if ($response != 401) {
-		$xml = new SimpleXmlElement($response);
-	} else {
-		$xml = "401 - Authentication Error";
-	}
-	return $xml;
 
 }
 
@@ -253,10 +288,22 @@ public function does_follow($user_a, $user_b, $auth_user, $auth_pass) {
 //Returns a list of a users' friends' ids.
 public function friends_ids($user, $auth_user='', $auth_pass='') {
 
-	$url = "http://twitter.com/friends/ids.xml?screen_name={$user}";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	$xml = new SimpleXmlElement($response);
-	return $xml;
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/friends/ids'), array(
+		'screen_name ' => $user
+	));
+
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
+	} else {
+		tmhUtilities::pr($tmhOAuth->response['response']);
+	}
 
 }
 
@@ -265,10 +312,22 @@ public function friends_ids($user, $auth_user='', $auth_pass='') {
 //Returns a list of a users' followers' ids.
 public function followers_ids($user, $auth_user='', $auth_pass='') {
 
-	$url = "http://twitter.com/followers/ids.xml?screen_name={$user}";
-	$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
-	$xml = new SimpleXmlElement($response);
-	return $xml;
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/followers/ids'), array(
+		'screen_name ' => $user
+	));
+
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
+	} else {
+		tmhUtilities::pr($tmhOAuth->response['response']);
+	}
 
 }
 
@@ -282,6 +341,21 @@ public function verify_credentials($auth_user, $auth_pass) {
 	$xml = new SimpleXmlElement($response);
 	return $xml;
 
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/account/verify_credentials'));
+
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
+	} else {
+		tmhUtilities::pr($tmhOAuth->response['response']);
+	}
+
 }
 
 
@@ -289,14 +363,20 @@ public function verify_credentials($auth_user, $auth_pass) {
 //Check the rate limit status of a user or the current IP. #Auth #NoLimit
 public function rate_limit_status($auth_user, $auth_pass) {
 
-	$url = "http://twitter.com/account/rate_limit_status.xml";
-	if (isset($auth_user) && isset($auth_pass)) {
-		$response = $this->send_request($url, 'GET', '', $auth_user, $auth_pass);
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $auth_user,
+		'user_secret' => $auth_pass,
+	));
+
+	$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/application/rate_limit_status'));
+
+	if ($code == 200) {
+		return json_decode($tmhOAuth->response['response']);
 	} else {
-		$response = $this->send_request($url, 'GET');
+		tmhUtilities::pr($tmhOAuth->response['response']);
 	}
-	$xml = new SimpleXmlElement($response);
-	return $xml;
 
 }
 
@@ -351,11 +431,29 @@ private function send_request($url, $method='GET', $data='', $auth_user='', $aut
 //Get OAuth authorization link
 public function oauth_authorize_link() {
 
-	$oauth = new TwitterOAuth($this->consumer_key, $this->consumer_secret);
-	$oauth_token = $oauth->getRequestToken();
-	$request_link = $oauth->getAuthorizeURL($oauth_token);
-	$data = array( "request_link" => $request_link, "request_token" => $oauth_token['oauth_token'], "request_token_secret" => $oauth_token['oauth_token_secret'] );
-	return $data;
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+	));
+
+	$params = array(
+		'x_auth_access_type' => 'write'
+	);
+	$code = $tmhOAuth->request('POST', $tmhOAuth->url('oauth/request_token', ''), $params);
+
+	if ($code == 200) {
+		$response = $tmhOAuth->extract_params($tmhOAuth->response['response']);
+    	$_SESSION["authtoken"] = $response["oauth_token"];
+        $_SESSION["authsecret"] = $response["oauth_token_secret"];
+        $_SESSION["authstate"] = 1;
+    	$authurl = $tmhOAuth->url("oauth/authorize", "") . '?oauth_token=' . $response["oauth_token"];
+    	$data = array(
+    		"request_link" => $authurl,
+    		"request_token" => $response["oauth_token"],
+    		"request_token_secret" => $response["oauth_token_secret"]
+    	);
+		return $data;
+	}
 
 }
 
@@ -364,22 +462,51 @@ public function oauth_authorize_link() {
 //Acquire OAuth user token
 public function oauth_get_user_token($request_token, $request_token_secret) {
 
-	$oauth = new TwitterOAuth($this->consumer_key, $this->consumer_secret, $request_token, $request_token_secret);
-	$tokens = $oauth->getAccessToken();
-	$user_token = array ( "access_token" => $tokens['oauth_token'], "access_token_secret" => $tokens['oauth_token_secret'] );
-	return $user_token;
+	$tmhOAuth->config['user_token'] = $request_token;
+  	$tmhOAuth->config['user_secret'] = $request_token_secret;
+
+  	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+	));
+
+  	$tmhOAuth->request("POST", $tmhOAuth->url("oauth/access_token", ""), array( 
+        'oauth_verifier' => $_GET["oauth_verifier"]  
+    ));
+
+    echo 'Resp: <pre>'; print_r($tmhOAuth->response); echo '</pre>';
+
+  	if ($tmhOAuth->response["code"] == 200) {
+  		$response = $tmhOAuth->extract_params($tmhOAuth->response['response']);
+    	$_SESSION["authstate"] = 2;
+    	$user_token = array(
+    		"access_token" => $response["oauth_token"],
+    		"access_token_secret" => $response["oauth_token_secret"]
+    	);
+		return $user_token;
+  	}
 
 }
 
 
 
 //Send an API request via OAuth
-public function oauth_request($url, $method, $user_access_key, $user_access_secret, $data) {
-	$oauth = new TwitterOAuth($this->consumer_key, $this->consumer_secret, $user_access_key, $user_access_secret);
-	//$thedata = array();
-	//parse_str($data, $thedata);
-	$response = $oauth->OAuthRequest($url, $data, $method);
-	return $response;
+public function oauth_request($url, $method='POST', $user_access_key, $user_access_secret, $data) {
+
+	$tmhOAuth = new tmhOAuth(array(
+		'consumer_key' => $this->consumer_key,
+		'consumer_secret' => $this->consumer_secret,
+		'user_token' => $user_access_key,
+		'user_secret' => $user_access_secret,
+	));
+
+	$code = $tmhOAuth->request($method, $tmhOAuth->url($url), $data);
+
+	if ($code == 200) {
+		tmhUtilities::pr(json_decode($tmhOAuth->response['response']));
+	} else {
+		tmhUtilities::pr($tmhOAuth->response['response']);
+	}
 
 }
 
@@ -408,9 +535,6 @@ public function shorten_url($the_url, $shortener='is.gd', $api_key='', $user='')
 	} elseif ($shortener=="3.ly") {
 		$url = "http://3.ly/?api=mh4829510392&u={$the_url}";
 		$response = $this->send_request($url, 'GET');
-	} elseif ($shortener=="ow.ly") {
-		$url = "http://www.pluginspark.com/hosted/shorten_url.php?shortener=ow.ly&url={$the_url}";
-		$response = $this->send_request($url, 'GET');		
 	} elseif ($shortener=="tinyurl") {
 		$url = "http://tinyurl.com/api-create.php?url={$the_url}";
 		$response = $this->send_request($url, 'GET');
