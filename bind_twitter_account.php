@@ -1,5 +1,3 @@
-<?php /*require_once(WP_CONTENT_DIR.'/plugins/'.plugin_basename(dirname(__FILE__)).'/mh_twitter_class.php');*/ ?>
-
 <div class="wrap">
 
 <?php
@@ -49,6 +47,7 @@ $plugin_dir = WP_CONTENT_URL.'/plugins/'.plugin_basename(dirname(__FILE__));
 $next_step = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 $next_step_split = explode('&step', $next_step);
 $next_step = htmlentities($next_step_split[0]);
+$twcallback = htmlentities($next_step_split[0]).'&step=5';
 
 
 
@@ -127,15 +126,33 @@ if ($stage == '3') {
 
 if ($stage == '4') {
 
-	$twitter = new Twitter_API(get_option('tweetable_app_key'), get_option('tweetable_app_key_secret'));
-	$request_link = $twitter->oauth_authorize_link();
-	update_option('tweetable_request_oauth', $request_link);
+	$tmhOAuth = new tmhOAuth(array(
+	    'consumer_key' => get_option('tweetable_app_key'),
+	    'consumer_secret' => get_option('tweetable_app_key_secret')
+	));
+
+	$tmhOAuth->request("POST", $tmhOAuth->url("oauth/request_token", ""), array( 
+	    'oauth_callback' => $twcallback  
+	));
+
+	if ($tmhOAuth->response["code"] == 200) {  
+	    //get request token
+	    $response = $tmhOAuth->extract_params($tmhOAuth->response["response"]);
+	    update_option('tweetable_access_token', array(
+	    	'authtoken' => $response["oauth_token"],
+	    	'authsecret' => $response["oauth_token_secret"]
+	    ));
+	    //send the user to Twitter to authorize the app
+	    $url = $tmhOAuth->url("oauth/authorize", "") . '?oauth_token=' . $response["oauth_token"];  
+	    //header("Location: " . $url);  
+	    //exit;  
+	}
 
 	?>
 	<h3>Step 4: Authorize Your Twitter Account</h3>
 	<p>Almost done! Now you need to authorize your blog to have access to your Twitter account.</p>
 	<p>Click the button below, and you will be taken to Twitter.com. If you're already logged in, you will be presented with the option to authorize your blog. Press the button to do so, and you will come right back here.</p>
-	<p style="text-align:center"><a href="<?php echo $request_link['request_link']; ?>"><img src="<?php echo $plugin_dir ?>/images/twitter_connect.png" alt="Sign in with Twitter" /></a></p>
+	<p style="text-align:center"><a href="<?php echo $url; ?>"><img src="<?php echo $plugin_dir ?>/images/twitter_connect.png" alt="Sign in with Twitter" /></a></p>
 	<?php
 
 }
@@ -144,32 +161,58 @@ if ($stage == '4') {
 
 if ($stage == '5') {
 
-	$request_link = get_option('tweetable_request_oauth');
-	$twitter = new Twitter_API(get_option('tweetable_app_key'), get_option('tweetable_app_key_secret'));
-	$tokens = $twitter->oauth_get_user_token($request_link['request_token'], $request_link['request_token_secret']);
-	echo 'Tokens: <pre>'; print_r($tokens); echo '</pre>';
-	$access_token = $tokens['access_token'];
-	$access_token_secret = $tokens['access_token_secret'];
-	update_option('tweetable_access_token', $access_token);
-	update_option('tweetable_access_token_secret', $access_token_secret);
-	delete_option('tweetable_request_oauth');
-	update_option('tweetable_account_activated', '1');
-	update_option('tweetable_tweetmeme_button_mode', '0');
-	update_option('tweetable_url_shortener', 'is.gd');
-	update_option("tweetable_auto_tweet_posts", '1');
-	update_option("tweetable_google_campaign_tags", '0');
-	$searches = array( 1 => '#wordpress', 2 => get_bloginfo('name'), 3 => 'from:redwall_hp' );
-	update_option('tweetable_saved_searches', $searches);
+	$tmhOAuth = new tmhOAuth(array(
+	    'consumer_key' => get_option('tweetable_app_key'),
+	    'consumer_secret' => get_option('tweetable_app_key_secret')
+	));
 
-	$admin_url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-	$admin_url_split = explode('/wp-admin/', $admin_url);
-	$admin_url = htmlentities($admin_url_split[0].'/wp-admin/');
+	//get the request tokens
+	$request_tokens = get_option('tweetable_access_token');
+	$tmhOAuth->config["user_token"] = $request_tokens["authtoken"];  
+	$tmhOAuth->config["user_secret"] = $request_tokens["authsecret"];
 
-	?>
-	<h3>Step 5: And You're Done!</h3>
-	<p>You have successfully authorized this blog to access your Twitter account <strong><?php echo get_option('tweetable_twitter_user'); ?></strong>.</p>
-	<p style="text-align:right"><a class="button" href="<?php echo $admin_url; ?>">Finish!</a></p>
-	<?php
+	//request an access token
+	$tmhOAuth->request("POST", $tmhOAuth->url("oauth/access_token", ""), array(
+	    'oauth_verifier' => $_GET["oauth_verifier"]  
+	));
+
+	if ($tmhOAuth->response["code"] == 200) {  
+
+	    //get the access token
+	    $response = $tmhOAuth->extract_params($tmhOAuth->response["response"]);
+	    $access_token = $response["oauth_token"];
+	    $access_token_secret = $response["oauth_token_secret"];
+
+	    //Update WP options
+		update_option('tweetable_access_token', $access_token);
+		update_option('tweetable_access_token_secret', $access_token_secret);
+		delete_option('tweetable_request_oauth');
+		update_option('tweetable_account_activated', '1');
+		update_option('tweetable_tweetmeme_button_mode', '0');
+		update_option('tweetable_url_shortener', 'is.gd');
+		update_option("tweetable_auto_tweet_posts", '1');
+		update_option("tweetable_google_campaign_tags", '0');
+		$searches = array( 1 => '#wordpress', 2 => get_bloginfo('name'), 3 => 'from:redwall_hp' );
+		update_option('tweetable_saved_searches', $searches);
+
+		$admin_url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		$admin_url_split = explode('/wp-admin/', $admin_url);
+		$admin_url = htmlentities($admin_url_split[0].'/wp-admin/');
+
+		?>
+		<h3>Step 5: And You're Done!</h3>
+		<p>You have successfully authorized this blog to access your Twitter account <strong><?php echo get_option('tweetable_twitter_user'); ?></strong>.</p>
+		<p style="text-align:right"><a class="button" href="<?php echo $admin_url; ?>">Finish!</a></p>
+		<?php
+
+	} else {
+
+		?>
+		<h3>Something went wrong...</h3>
+		<p>Tweetable was unable to authenticate your Twitter account.</p>
+		<?php
+
+	}
 
 }
 
