@@ -142,10 +142,8 @@ if ($stage == '4') {
 	    	'authtoken' => $response["oauth_token"],
 	    	'authsecret' => $response["oauth_token_secret"]
 	    ));
-	    //send the user to Twitter to authorize the app
-	    $url = $tmhOAuth->url("oauth/authorize", "") . '?oauth_token=' . $response["oauth_token"];  
-	    //header("Location: " . $url);  
-	    //exit;  
+	    //get the authorization URL and send the user on their way
+	    $url = $tmhOAuth->url("oauth/authorize", "") . '?oauth_token=' . $response["oauth_token"];
 	}
 
 	?>
