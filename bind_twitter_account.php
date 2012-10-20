@@ -56,18 +56,18 @@ if ($stage == '1') {
 	?>
 	<h3>Step 1: Register your blog with Twitter</h3>
 	<p>For security reasons, tweetable uses Twitter's OAuth protocol to authenticate and access your Twitter account. For it to work, you must register your blog as an application with Twitter. Click the button below to go to Twitter.com and register it.</p>
-	<p style="text-align:center"><a class="button" href="http://twitter.com/oauth_clients/new" target="_blank">Register Application</a></p>
+	<p style="text-align:center"><a class="button" href="https://dev.twitter.com/apps/new" target="_blank">Register Application</a></p>
 	<p>When you arrive at Twitter, click the &quot;Register a new application,&quot; you will see a form like the one pictured below. You will have to fill-out a few fields.</p>
 	<p style="text-align:center"><img src="<?php echo $plugin_dir ?>/images/wizard_1.jpg" alt="Twitter Form" /></p>
 	<p>You do not need to upload an icon. It's entirely optional, and chances are nobody will see it.</p>
 	<ol style="list-style:decimal; margin: 0 25px 15px 25px;">
-	<li>Enter your blog's name in the <strong>Application Name</strong> field.</li>
+	<li>Enter your blog's name in the <strong>Name</strong> field.</li>
 	<li>Put a brief description of your blog in the <strong>Description</strong> box. Just a few words to identify the application.</li>
-	<li>Your blog's URL should go in the <strong>Application Website</strong> field. (E.g. <em>http://www.webmaster-source.com.</em>)</li>
-	<li>Leave the <strong>Application Type</strong> as <strong>Browser.</strong></li>
+	<li>Your blog's URL should go in the <strong>Website</strong> field. (E.g. <em>http://www.webmaster-source.com.</em>)</li>
 	<li>In the <strong>Callback URL</strong> field, paste <strong><code><?php echo $next_step; ?>&amp;step=5&amp;oauth=1</code></strong></li>
-	<li>Set <strong>Default Access type</strong> as <strong>Read &amp; Write.</strong></li>
-	<li>Press the <strong>Save</strong> button, then come back here and continue the setup wizard.</li>
+	<li>Press the <strong>Save</strong> button, then click the <strong>Settings</strong> tab on the page that appears next.</li>
+	<li>Set the <strong>Access</strong> option to be <strong>Read and Write</strong>.</li>
+	<li>Save the application settings and come back here to continue the setup process.</li>
 	</ol>
 	<p style="text-align:right"><a class="button" href="<?php echo $next_step; ?>&amp;step=2">Continue...</a></p>
 	<?
@@ -80,7 +80,7 @@ if ($stage == '2') {
 
 	?>
 	<h3>Step 2: Enter the Application Keys</h3>
-	<p>To enable WordPress to interface with the Twitter API, you must enter the application consumer keys. You can find them by visiting <a href="http://twitter.com/oauth_clients/" target="_blank">this page on Twitter</a> and selecting the application you registered in the previous step.</p>
+	<p>To enable WordPress to interface with the Twitter API, you must enter the application consumer keys. You can find them by visiting <a href="https://dev.twitter.com/apps/" target="_blank">this page on Twitter</a> and selecting the application you registered in the previous step.</p>
 	<p style="text-align:center"><img src="<?php echo $plugin_dir ?>/images/wizard_2.jpg" alt="Finding the Application Keys" /></p>
 	<p>Enter the <strong>Consumer Key</strong> and <strong>Consumer Secret</strong> key in the form below.</p>
 	<form method="post" action="<?php echo $next_step; ?>&amp;step=3">
